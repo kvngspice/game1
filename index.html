@@ -1784,6 +1784,8 @@ function drawVid(f,id,a,jit){const S=SPR[f.key],fm=S.m.frames[id];const k=VIEW.K
   const [sx,sy]=toScreen(f.x,f.y);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';setT([k*f.facing,0,0,k,sx+(jit?jit[0]:0),sy]);ctx.globalAlpha=a;
   if(f.skin)ctx.filter=f.skin==='spirit'?'grayscale(1) brightness(1.6) opacity(.75)':'hue-rotate(160deg) saturate(.8)';
   ctx.drawImage(img,fm.x,fm.y,fm.w,fm.h);ctx.filter='none';
+  // tattoo glow, same pulse as the painted rig's glow layer
+  const gl=S.glow[id];if(gl&&!f.skin){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a*clamp(.3+.16*Math.sin(G.t*2.4)+f.glow*.9,0,1);ctx.drawImage(gl,fm.x,fm.y,fm.w,fm.h);ctx.globalCompositeOperation='source-over';ctx.globalAlpha=a}
   if(f.flash>0){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=a*clamp(f.flash/.09,0,1)*.35;ctx.drawImage(img,fm.x,fm.y,fm.w,fm.h);ctx.globalCompositeOperation='source-over'}
   ctx.globalAlpha=1;resetT();return true}
 function drawFighter(f){
@@ -2424,7 +2426,7 @@ async function boot(){
   for(const k in ASSETS.stages){const s=ASSETS.stages[k];job(s.src,img=>STG[k]=img);STG[k+'_glow']=[];s.glow.forEach((g,i)=>job(g,img=>STG[k+'_glow'][i]=img))}
   OSUN=ASSETS.osun||null;
   for(const k in ASSETS.vic||{}){const m=ASSETS.vic[k];VIC[k]=Object.assign({},m,{img:{}});for(const r in m.parts){const a=m.parts[r];job(a.src,img=>{VIC[k].img[r]=partEntry(img,a,k)})}}
-  for(const k in ASSETS.spr||{}){const m=ASSETS.spr[k];SPR[k]={m,img:{},half:{},wsc:m.fightH/m.H};for(const id in m.frames)job(m.base+String(id).padStart(3,'0')+'.webp',img=>{SPR[k].img[id]=img;SPR[k].half[id]=mipHalf(img)})}
+  for(const k in ASSETS.spr||{}){const m=ASSETS.spr[k];SPR[k]={m,img:{},half:{},glow:{},wsc:m.fightH/m.H};for(const id in m.frames){const n=String(id).padStart(3,'0');job(m.base+n+'.webp',img=>{SPR[k].img[id]=img;SPR[k].half[id]=mipHalf(img)});job(m.base+'g'+n+'.webp',img=>SPR[k].glow[id]=img)}}
   // load in small batches so the bar moves and phones are not flooded
   for(let i=0;i<jobs.length;i+=8)await Promise.all(jobs.slice(i,i+8).map(j=>j()));
   for(const k in ASSETS.chars)buildOrders(k);
