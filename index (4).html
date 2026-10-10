@@ -157,6 +157,7 @@ kbd{font-family:var(--body);font-weight:800;font-size:.76rem;background:var(--bo
 .side.r .ori .seg2 i b{transform-origin:right}
 .ori.ready span{animation:ready .6s ease-in-out infinite alternate}
 .ori .seg2 i.full b{box-shadow:0 0 10px var(--gold2)}
+.ori.m span{color:#7ff0c8}.ori.m .seg2 i{background:rgba(127,240,200,.12)}.ori.m .seg2 i b{background:linear-gradient(90deg,#1f9e7a,#7ff0c8)}
 @keyframes ready{to{color:#fff;text-shadow:0 0 12px var(--gold2)}}
 .mid{text-align:center}
 .timer{font-family:var(--display);font-weight:900;font-size:2.3rem;line-height:1;min-width:2.3ch;padding:4px 10px 6px;background:var(--lacq);border-bottom:2px solid var(--gold);font-variant-numeric:tabular-nums;text-shadow:0 2px 0 #000}
@@ -181,29 +182,26 @@ kbd{font-family:var(--body);font-weight:800;font-size:.76rem;background:var(--bo
 .touch .dock{left:50%;transform:translateX(-50%);bottom:auto;top:max(96px,calc(env(safe-area-inset-top,0px) + 92px));justify-content:center}
 
 /* Touch controls */
-#touch{position:absolute;inset:0;pointer-events:none;--b:clamp(50px,13.5vh,68px);--gap:10px}
+#touch{position:absolute;inset:0;pointer-events:none;--b:clamp(42px,10.5vh,54px);--gap:8px}
 #joyZone{position:absolute;left:0;bottom:0;width:44%;height:66%;pointer-events:auto;touch-action:none}
-.joy{position:absolute;width:calc(var(--b)*2);height:calc(var(--b)*2);margin:calc(var(--b)*-1) 0 0 calc(var(--b)*-1);border-radius:50%;border:2px solid rgba(243,231,209,.22);background:radial-gradient(circle,rgba(14,9,7,.35),rgba(14,9,7,.55));transition:opacity .2s}
-.joy i{position:absolute;left:50%;top:50%;width:calc(var(--b)*.86);height:calc(var(--b)*.86);margin:calc(var(--b)*-.43) 0 0 calc(var(--b)*-.43);border-radius:50%;background:radial-gradient(circle at 40% 35%,#f3e7d1,#b79f80);box-shadow:0 4px 12px rgba(0,0,0,.5)}
-.joy.idle{opacity:.55}
-#pad{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:calc(var(--b)*3 + var(--gap)*2);height:calc(var(--b)*3 + var(--gap)*2 + var(--b)*.95 + var(--gap)*1.6)}
-.fb{position:absolute;width:var(--b);height:var(--b);border-radius:50%;pointer-events:auto;touch-action:none;background:radial-gradient(circle at 50% 35%,rgba(40,28,22,.82),rgba(12,8,6,.82));border:2px solid rgba(243,231,209,.28);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.45);transition:transform .08s,background .08s}
-.fb svg{width:46%;height:46%;overflow:visible}
-.fb small{position:absolute;bottom:-1.25em;left:50%;transform:translateX(-50%);font-size:.62rem;letter-spacing:.08em;color:var(--ash);white-space:nowrap;text-transform:uppercase;font-weight:700}
-.fb.on{transform:scale(.9);background:radial-gradient(circle at 50% 35%,rgba(90,64,40,.9),rgba(30,20,14,.9));border-color:var(--gold2)}
-.fb.tri{left:calc(var(--b) + var(--gap));top:calc(var(--b)*.95 + var(--gap)*1.6)}
-.fb.sq{left:0;top:calc(var(--b)*1.95 + var(--gap)*2.6)}
-.fb.ci{right:0;top:calc(var(--b)*1.95 + var(--gap)*2.6)}
-.fb.x{left:calc(var(--b) + var(--gap));top:calc(var(--b)*2.95 + var(--gap)*3.6)}
-.ib{position:absolute;top:0;width:calc(var(--b)*.86);height:calc(var(--b)*.86);border-radius:50%;pointer-events:auto;touch-action:none;background:rgba(12,8,6,.78);border:2px solid rgba(243,231,209,.28);display:grid;place-items:center;transition:transform .08s,border-color .15s}
-.ib svg{width:52%;height:52%}
-.ib.on{transform:scale(.9);border-color:var(--gold2);background:rgba(60,42,26,.9)}
-.ib.shield{left:calc(var(--b)*.07)}
-.ib.orib{left:calc(var(--b)*1.07 + var(--gap));border-color:rgba(255,217,138,.35)}
-.ib.dodge{right:calc(var(--b)*.07)}
-.ib.orib.ready{border-color:var(--gold2);box-shadow:0 0 18px rgba(255,190,90,.55);animation:obr 1s ease-in-out infinite alternate}
-@keyframes obr{to{box-shadow:0 0 28px rgba(255,210,120,.9)}}
-.ib.orib i{position:absolute;inset:-2px;border-radius:50%;background:conic-gradient(var(--gold2) var(--p,0%),transparent 0);-webkit-mask:radial-gradient(circle,transparent 62%,#000 64%);mask:radial-gradient(circle,transparent 62%,#000 64%)}
+.joy{position:absolute;width:calc(var(--b)*2);height:calc(var(--b)*2);margin:calc(var(--b)*-1) 0 0 calc(var(--b)*-1);border-radius:50%;border:1.5px solid rgba(243,231,209,.18);background:radial-gradient(circle,rgba(14,9,7,.2),rgba(14,9,7,.4));transition:opacity .2s}
+.joy i{position:absolute;left:50%;top:50%;width:calc(var(--b)*.8);height:calc(var(--b)*.8);margin:calc(var(--b)*-.4) 0 0 calc(var(--b)*-.4);border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(243,231,209,.85),rgba(183,159,128,.8));box-shadow:0 3px 10px rgba(0,0,0,.4)}
+.joy.idle{opacity:.4}
+.tb{position:absolute;border-radius:50%;pointer-events:auto;touch-action:none;display:grid;place-items:center;background:rgba(12,8,6,.5);border:1.5px solid rgba(243,231,209,.22);opacity:.62;transition:transform .08s,opacity .15s,border-color .15s}
+.tb svg{width:48%;height:48%;overflow:visible}
+.tb.on{transform:scale(.9);opacity:.95;border-color:var(--gold2);background:rgba(60,42,26,.7)}
+.blk{left:max(14px,env(safe-area-inset-left,0px));bottom:max(12px,env(safe-area-inset-bottom,0px));width:calc(var(--b)*.9);height:calc(var(--b)*.9);z-index:2}
+#pad{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:max(12px,env(safe-area-inset-bottom,0px));width:calc(var(--b)*2.15 + var(--gap));height:calc(var(--b)*2.05 + var(--gap)*1.5)}
+.tb.atk{width:var(--b);height:var(--b)}
+.tb.hand{left:0;bottom:calc(var(--b)*.32)}
+.tb.leg{right:0;bottom:0}
+.tb.sp{width:calc(var(--b)*.74);height:calc(var(--b)*.74);opacity:.45}
+.tb.spm{left:calc(var(--b)*.13);top:0}
+.tb.sph{right:calc(var(--b)*.13);top:calc(var(--b)*.2)}
+.tb.sp i{position:absolute;inset:-2px;border-radius:50%;background:conic-gradient(var(--rc,#ffd98a) var(--p,0%),transparent 0);-webkit-mask:radial-gradient(circle,transparent 62%,#000 64%);mask:radial-gradient(circle,transparent 62%,#000 64%)}
+.tb.spm{--rc:#45d6a4}.tb.sph{--rc:#ffd98a}
+.tb.sp.ready{opacity:.95;border-color:var(--rc);animation:obr 1s ease-in-out infinite alternate}
+@keyframes obr{from{box-shadow:0 0 8px var(--rc)}to{box-shadow:0 0 22px var(--rc)}}
 
 /* Overlays: pause, options, howto */
 .panel{width:min(640px,100%);max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:12px;background:var(--lacq);border-top:2px solid var(--gold);padding:20px;scrollbar-width:thin}
@@ -366,14 +364,12 @@ kbd{font-family:var(--body);font-weight:800;font-size:.76rem;background:var(--bo
     </div>
     <div id="touch" hidden>
       <div id="joyZone"><div class="joy idle" id="joy"><i></i></div></div>
+      <button class="tb blk" data-k="guard" aria-label="Block"><svg viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5l-8-3z" fill="none" stroke="#f3e7d1" stroke-width="2" stroke-linejoin="round"/></svg></button>
       <div id="pad">
-        <button class="ib shield" data-k="guard" aria-label="Shield"><svg viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5l-8-3z" fill="none" stroke="#f3e7d1" stroke-width="2" stroke-linejoin="round"/><path d="M12 6v12" stroke="#f3e7d1" stroke-width="1.6" opacity=".6"/></svg></button>
-        <button class="ib orib" data-k="special" aria-label="Orí special"><i></i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2" fill="#ffd98a"/><g stroke="#ffd98a" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></svg></button>
-        <button class="ib dodge" data-k="dodge" aria-label="Dodge"><svg viewBox="0 0 24 24"><g fill="none" stroke="#f3e7d1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5 6 12l7 7"/><path d="M19 5l-7 7 7 7" opacity=".55"/></g></svg></button>
-        <button class="fb tri" data-k="medium" aria-label="Medium attack"><svg viewBox="0 0 24 24"><path d="M12 3 22 20H2z" fill="none" stroke="#45d6a4" stroke-width="2.6" stroke-linejoin="round"/></svg><small>Medium</small></button>
-        <button class="fb sq" data-k="light" aria-label="Light attack"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="#f29bd6" stroke-width="2.6"/></svg><small>Light</small></button>
-        <button class="fb ci" data-k="heavy" aria-label="Heavy attack"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="#ff6274" stroke-width="2.6"/></svg><small>Heavy</small></button>
-        <button class="fb x" data-k="launch" aria-label="Launch"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19" stroke="#7fa8ff" stroke-width="2.6" stroke-linecap="round"/></svg><small>Launch</small></button>
+        <button class="tb sp spm" data-k="specM" aria-label="Medium special"><i></i><svg viewBox="0 0 24 24"><path d="M12 3 22 20H2z" fill="none" stroke="#45d6a4" stroke-width="2.6" stroke-linejoin="round"/></svg></button>
+        <button class="tb sp sph" data-k="specH" aria-label="Heavy special"><i></i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="#ffd98a" stroke-width="2.6"/></svg></button>
+        <button class="tb atk hand" data-k="hand" aria-label="Hand attack"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="#f29bd6" stroke-width="2.6"/></svg></button>
+        <button class="tb atk leg" data-k="leg" aria-label="Leg attack"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19" stroke="#7fa8ff" stroke-width="2.6" stroke-linecap="round"/></svg></button>
       </div>
     </div>
   </section>
@@ -779,15 +775,23 @@ for(const key in CHARS){const C=CHARS[key],cr=C.poses.crouch,jp=C.poses.jump;
     lowH:Object.assign({},cr,{bx:-10,by:44,tor:-16,head:4,ffx:250,ffy:-70,bfx:-30,bLift:.4,face:1}),
     legSwW:Object.assign({},cr,{by:110,tor:18,ffx:20,bfx:-30,sq:.95}),
     legSwH:Object.assign({},cr,{bx:20,by:130,tor:28,head:-6,ffx:330,ffy:-6,bfx:-40,sq:.95,face:1}),
+    kickMW:Object.assign({},cr,{by:10,tor:-8,head:2,ffx:60,ffy:-210,fLift:.7,bLift:.2,sq:1}),
+    kickMH:Object.assign({},cr,{bx:-14,by:6,tor:-18,head:6,ffx:340,ffy:-300,bfx:-20,bLift:.5,face:1,sq:1}),
+    kickHH:Object.assign({},cr,{bx:-24,by:0,tor:-26,head:10,ffx:290,ffy:-520,bfx:-30,bLift:.6,face:1,sq:1}),
+    stompW:Object.assign({},cr,{bx:-20,by:-10,tor:-24,head:8,ffx:200,ffy:-580,bfx:-20,bLift:1,face:1,sq:1.02}),
+    stompH:Object.assign({},cr,{bx:30,by:70,tor:20,head:-6,ffx:280,ffy:-10,bfx:-40,sq:.95,face:1}),
     airKW:Object.assign({},jp,{ffx:-50,ffy:-170,bfx:40,bfy:-120}),
     airKH:Object.assign({},jp,{tor:-14,head:4,ffx:270,ffy:-40,bfx:40,bfy:-150,face:1})});
   const F=FATAL[key];C.fatalName=F[2];
   Object.assign(C.clips,{
     lowkick:{len:.3,keys:[[0,'stance'],[.06,'lowW','io'],[.1,'lowH','out'],[.19,'lowH'],[.3,'stance','io']],hit:[[.08,.15,{dmg:22,stun:.32,push:150,kind:'low',range:430,h:120,low:1}]],trail:'footF'},
     sweep:{len:.58,keys:[[0,'stance'],[.14,'legSwW','io'],[.22,'legSwH','out'],[.38,'legSwH'],[.58,'stance','io']],hit:[[.19,.28,{dmg:46,stun:.6,push:240,kind:'trip',range:530,h:60,low:1}]],trail:'footF'},
+    kickM:{len:.34,keys:[[0,'stance'],[.07,'kickMW','io'],[.12,'kickMH','out'],[.2,'kickMH'],[.34,'stance','io']],hit:[[.1,.17,{dmg:30,stun:.32,push:220,kind:'light',range:540,h:330}]],trail:'footF'},
+    kickH:{len:.42,keys:[[0,'stance'],[.09,'kickMW','io'],[.15,'kickHH','out'],[.25,'kickHH'],[.42,'stance','io']],hit:[[.13,.2,{dmg:38,stun:.38,push:280,kind:'mid',range:520,h:500}]],trail:'footF'},
+    legFin:{len:.74,keys:[[0,'stance'],[.16,'stompW','io'],[.3,'stompH','out'],[.52,'stompH'],[.74,'stance','io']],hit:[[.27,.36,{dmg:72,stun:.7,push:620,kind:'kd',range:560,h:260,crack:1}]],ev:[[.28,'legPower']],trail:'footF'},
     airk:{len:.4,keys:[[0,'jump'],[.07,'airKW','io'],[.12,'airKH','out'],[.4,'jump','io']],hit:[[.09,.24,{dmg:38,stun:.35,push:180,kind:'air',range:450,h:260}]],trail:'footF'},
     fatal:{len:2.1,keys:[[0,'stance'],[.3,F[0],'io'],[.85,F[0]],[.95,F[1],'out'],[1.6,F[1]],[2.1,'win','io']],hit:[],ev:[[.96,'fatalStrike']],trail:C.trail.weapon?'weapon':null}});
-  C.moves=C.moves.concat([['S+J','↓□','Low kick','breaks guard'],['S+K','↓△','Leg sweep','trips them, breaks guard'],['Jump+J','Air □','Jump kick',''],['F','FINISH','Fatality','enemy nearly dead after a combo']]);
+  C.strings={hand:['light','light','medium','medium','fwd'],leg:['kickM','kickM','lowkick','kickH','legFin']};
 }
 
 /* ── forward + medium command moves, dash poses and acrobatics ── */
@@ -805,12 +809,14 @@ const LUNGE={light:300,mid:520,kd:600,launch:380,low:260,trip:420};
 for(const key in CHARS){const C=CHARS[key],F=FWD[key];
   Object.assign(C.poses,F.poses||{});C.clips.fwd=F.clip;C.fwdName=F.name;
   C.poses.dash=Object.assign({},C.poses.crouch,{bx:40,by:30,tor:18,head:-6,ffx:60,bfx:-60,bLift:1,sq:1});
-  for(const n of ['light','medium','heavy','launch','lowkick','sweep']){const c=C.clips[n];if(!c||c.move||c.leap||!c.hit.length)continue;const h=c.hit[0];c.move=[[Math.max(0,h[0]-.07),h[0]+.02,LUNGE[h[2].kind]||300]]}
-  const sw=C.moves.findIndex(m=>m[2]==='Leg sweep');
-  C.moves.splice(sw+1,0,['→+K','→△',F.name,F.note],['D D','→→','Dash',''],['A A','←←',key==='esu'?'Handspring':'Back hop','slips away']);
+  for(const n of ['light','medium','heavy','launch','lowkick','sweep','kickM','kickH','legFin']){const c=C.clips[n];if(!c||c.move||c.leap||!c.hit.length)continue;const h=c.hit[0];c.move=[[Math.max(0,h[0]-.07),h[0]+.02,LUNGE[h[2].kind]||300]]}
+  const LEGFIN={ogun:'Anvil stomp',yemoja:'Riptide stomp',esu:'Crossroad heel',sango:'Thunder stomp',oya:'Whirlwind heel'}[key];C.legFinName=LEGFIN;
+  const specM=key==='ogun'?'Forge quake':C.moves[2][2],launchN=C.moves[3][2];C.specMName=specM;
+  C.moves=[['J','□','Hand string','tap up to 5 times; the 5th is '+F.name],['K','✕','Leg string','tap up to 5 times; the 5th is '+LEGFIN],['S+J','↓□',launchN,'launches'],['S+K','↓✕',key==='oya'?'Sliding thrust':'Leg sweep','trips them, breaks guard'],['L','△',specM,'medium special, fills from combos'],['U','○',C.finisher,'heavy special, fills slowly'],['Air','□ ✕','Air strikes',''],['D D','→→','Dash',''],['A A','←←',key==='esu'?'Handspring':'Back hop','slips away'],['F','FINISH','Fatality','enemy nearly dead after a combo']];
 }
 /* Èṣù: somersault launcher that carries him up after the rival, handspring back-hop */
 Object.assign(CHARS.esu.poses,{flipA:{free:1,spin:-150,by:-20,tor:10,head:-6,lU:60,lF:20,lh:1,rU:100,rF:60,wpn:-40,ffx:40,ffy:-200,bfx:120,bfy:-200,face:1},flipB:{free:1,spin:-330,by:-20,tor:10,head:-6,lU:60,lF:20,lh:1,rU:100,rF:60,wpn:-40,ffx:40,ffy:-200,bfx:120,bfy:-200},flipJ:Object.assign({},CHARS.esu.poses.jump,{spin:-360})});
+CHARS.ogun.clips.heavy.ev=[[.3,'quake']];
 Object.assign(CHARS.esu.clips.launch,{len:.62,keys:[[0,'stance'],[.13,'riseW','io'],[.21,'riseH','out'],[.3,'flipA','lin'],[.44,'flipB','lin'],[.62,'flipJ','out']],leap:[.24,1500],move:null});
 CHARS.esu.flipHop=1;CHARS.esu.moves=CHARS.esu.moves.map(m=>m[2]==='Rising flame'?[m[0],m[1],'Rising somersault','launches and follows them up']:m);
 /* Ọya: her sweep is a sliding spear thrust */
@@ -1073,7 +1079,7 @@ class Fighter{
   constructor(side,key,skin){this.side=side;this.key=key;this.C=CHARS[key];this.IMG=IMGS[key];this.skin=skin||null;this.wins=0;this.ctrl=null;this.reset(side?460:-460,side?-1:1)}
   reset(x,facing){const C=this.C;
     Object.assign(this,{x,y:0,vx:0,vy:0,facing,state:'idle',st:0,clip:null,clipName:null,ct:0,from:copyPose(C.POSE.stance),pose:copyPose(C.POSE.stance),xf:.07,
-      maxHp:C.hp,hp:C.hp,trail:1,ori:0,hitSet:new Set(),buf:{},chain:0,airUsed:false,stun:0,juggle:0,bounce:0,glow:0,flash:0,inv:0,lockF:0,
+      maxHp:C.hp,hp:C.hp,trail:1,ori:0,meterM:0,str:0,strT:0,inString:false,hitSet:new Set(),buf:{},chain:0,airUsed:false,stun:0,juggle:0,bounce:0,glow:0,flash:0,inv:0,lockF:0,
       spr:C.att.map(()=>({a:0,v:0,fl:0,flv:0})),wpnD:null,wpnV:0,pby:0,pbv:0,shieldA:0,smear:[],trailPts:[],walkPh:0,spinV:0,rot:0,fired:new Set(),
       bph:this.side?.37:0,splashT:0,combo:0,comboDmg:0,comboT:0,ko:false,regenT:0,heavyHurt:false,firedLeap:false,
       stats:this.stats||{dmg:0,hits:0,best:0}})}
@@ -1158,7 +1164,7 @@ function land(att,def,d,srcX,srcY){
   const scale=Math.max(.4,1-att.combo*.06);let dmg=Math.round(d.dmg*scale*(att.dmgMul||1));
   def.hp=Math.max(0,def.hp-dmg);def.regenT=1.6;
   att.combo++;att.comboDmg+=dmg;att.comboT=1.1;att.stats.dmg+=dmg;att.stats.hits++;att.stats.best=Math.max(att.stats.best,att.combo);
-  att.ori=Math.min(100,att.ori+d.dmg*.2);def.ori=Math.min(100,def.ori+d.dmg*.14);att.glow=Math.min(1,att.glow+.35);
+  att.ori=Math.min(100,att.ori+d.dmg*.13);def.ori=Math.min(100,def.ori+d.dmg*.08);att.meterM=Math.min(100,att.meterM+d.dmg*.6);def.meterM=Math.min(100,def.meterM+d.dmg*.15);att.glow=Math.min(1,att.glow+.35);
   const heavy=d.kind==='kd'||d.kind==='launch'||d.kind==='trip';
   if(d.low&&wasGuard&&!def.air){floatText(def.x,def.y+560,'GUARD BROKEN','#ffd98a');shake(.25);G.stop=Math.max(G.stop,.08)}
   def.lockF=0;
@@ -1192,6 +1198,11 @@ function land(att,def,d,srcX,srcY){
 function fireEvents(f,o,t0,t1){const c=f.clip;if(!c||!c.ev)return;
   for(const [t,name] of c.ev){if(t>=t0&&t<t1&&!f.fired.has(name)){f.fired.add(name);EVENTS[name](f,o)}}}
 const EVENTS={
+  quake(f){G.haz.push({kind:'quake',owner:f,x:f.x+f.facing*260,vx:f.facing*1500,d:f.facing,t:0,life:.75,last:0,d2:{dmg:58,stun:.6,push:520,kind:'kd',dir:f.facing}});shake(.35);SFX.play('thud')},
+  legPower(f){const q=f.world('foot_f',f.C.trail.footF?f.C.trail.footF[0]:f.C.P.ankF);const x=q[0],el=f.C.el;
+    if(el==='iron'){crack(x);embers(x,20,18,700,1)}else if(el==='water'){splash(x,30,1.6,f.facing);ripple(x,320,.6);puddle(x,300,5)}else if(el==='fire'){fireBurst(x,60,.9);scorch(x,260)}
+    else if(el==='storm'){bolt(x+rand(-40,40),1500,x,10,.22,.8);light(x,200,'160,200,255',600,.25,.6)}else{windBurst(x,80,1.2);G.fx.push({k:'crescent',x,y:120,t:0,life:.3,r:260,d:f.facing,rot:0})}
+    dust(x,12,1.3);shake(.3)},
   /* Ọya */
   slideDust(f){dust(f.x+f.facing*120,16,1.4);puff(f.x,1.2)},
   whirl(f){const q=[f.x,380];ring(q[0],q[1],'#8fe8ff',420,.3,.35);drops(q[0],q[1],18,900,0,Math.PI,.8);SFX.play('splash')},
@@ -1251,6 +1262,9 @@ function hazTick(dt){
         z.tick-=dt;if(z.tick<=0&&Math.abs(dx)<240){z.tick=.2;land(f,o,{dmg:13,stun:.4,push:0,kind:'air',h:400,dir:Math.sign(dx)||1},z.x,Math.max(300,o.y+300));if(o.state==='tumble'){o.vy=Math.max(o.vy,700);o.vx=Math.sign(dx)*120}}}
       if(!z.fin&&!z.fx&&u>=1.8){z.fin=1;if(Math.abs(o.x-z.x)<300&&hazHit(z,o))land(f,o,{dmg:72,stun:.8,push:500,kind:'launch',big:1,finisher:1,dir:z.d},z.x,Math.max(400,o.y+300));windBurst(z.x,700,2);shake(.6)}}
     else if(z.kind==='pillar'){}
+    else if(z.kind==='quake'){z.x+=z.vx*dt;if(z.t-z.last>.06){z.last=z.t;crack(z.x);embers(z.x,10,6,500,1);dust(z.x,4,1)}
+      if(!z.hit&&Math.abs(o.x-z.x)<160&&o.y<120&&hazHit(z,o)){z.hit=1;land(f,o,z.d2,z.x,120);z.life=Math.min(z.life,z.t+.1)}
+      if(Math.abs(z.x)>STAGE.half+200)z.life=0}
     else if(z.kind==='bolt'){if(!z.done&&z.t>=z.fire){z.done=1;strike(z.x,1);scorch(z.x,260);SFX.play('thunder');
         if(Math.abs(o.x-z.x)<150&&o.y<900&&hazHit(z,o))land(f,o,z.d2,z.x,500)}}
     else if(z.kind==='clap'){if(!z.done){z.done=1;shake(1);CAM.kick=.14;screenFlash(.36,'210,230,255');SFX.play('clap');ring(z.x,10,'#cfe6ff',1800,.7,.16);crack(z.x,'170,210,255');crack(z.x+rand(-500,500),'170,210,255');
@@ -1289,45 +1303,54 @@ function drawHazards(back){resetT();
 }
 
 /* ── input → fighter ── */
-const ATKS=['light','medium','heavy','launch','special'];
-function canCancel(f,next){
-  if(!f.clip||!f.hitSet.size)return false;
-  const n=f.clipName;const after=f.clip.hit.length?f.clip.hit[f.clip.hit.length-1][0]:0;if(f.ct<after)return false;
-  if(next==='special')return n!=='special'&&f.ori>=50;
-  if(n==='light')return next==='light'?f.chain<2:['medium','heavy','launch','lowkick','sweep','fwd'].includes(next);
-  if(n==='lowkick')return next==='lowkick'?f.chain<2:['sweep','medium','heavy','launch','fwd'].includes(next);
-  if(n==='fwd')return ['heavy','launch'].includes(next);
-  if(n==='medium')return ['heavy','launch'].includes(next);
-  return false;
-}
-function startAttack(f,name){
-  if(name==='special'){if(f.ori<50&&!FIGHT.training)return false;if(!FIGHT.training||f.ori>=50)f.ori=Math.max(0,f.ori-50);f.glow=1;
+const ATKS=['hand','leg','specM','specH'];
+/* two attack buttons build 5-hit strings; the 5th is each god's finisher. Specials cost a full meter. */
+const LEGACY={light:'hand',medium:'leg',heavy:'specM',special:'specH'};
+function canChain(f,kind){if(!f.clip)return false;const n=f.clipName;
+  if(kind==='special')return n!=='special'&&n!=='fatal'&&f.hitSet.size>0&&(f.ori>=100||FIGHT.training);
+  if(kind==='heavy')return f.inString&&f.hitSet.size>0&&(f.meterM>=100||FIGHT.training);
+  if(!f.inString||f.str>=5)return false;
+  const h=f.clip.hit,t0=h.length?h[h.length-1][0]+.03:f.clip.len*.45;return f.ct>=t0}
+const canCancel=(f,next)=>canChain(f,next==='special'?'special':next==='heavy'?'heavy':'string');
+function resolveAtk(f,a,inp){
+  if(a==='specM')return(f.meterM>=100||FIGHT.training)?'heavy':null;
+  if(a==='specH')return(f.ori>=100||FIGHT.training)?'special':null;
+  if(inp.held.guard)return a==='hand'?'launch':'sweep';
+  return f.C.strings[a][Math.min(f.str,4)]}
+function startAttack(f,name,string){
+  if(name==='special'){if(f.ori<100&&!FIGHT.training)return false;f.ori=FIGHT.training?f.ori:0;f.glow=1;
     if(f.C.clips.special.superFlash){G.superF={f,t:0,life:.5};callout(f.C.finisher,f.C.name,true,f.C.glowCol);SFX.play('super',f.C.el)}}
-  if(name==='light'||name==='lowkick')f.chain=f.clipName===name?f.chain+1:1;else f.chain=0;
-  f.state='attack';f.st=0;f.setClip(name,name==='light'?.04:.06);SFX.whoosh(name,f.C.el);return true;
+  if(name==='heavy'){if(f.meterM<100&&!FIGHT.training)return false;f.meterM=FIGHT.training?f.meterM:0;f.glow=Math.max(f.glow,.7);callout(f.C.specMName,'',true,f.C.glowCol)}
+  if(string){f.str++;f.inString=true;f.strT=.4;if(f.str===5){f.glow=1;SFX.play('charge')}}else{f.str=0;f.inString=false}
+  f.chain=0;f.state='attack';f.st=0;f.setClip(name,name==='light'||name==='kickM'?.04:.06);SFX.whoosh(name==='legFin'||name==='fwd'?'heavy':name,f.C.el);return true;
 }
 function playerTick(f,o,inp,dt){
-  for(const a of ATKS.concat(['dodge','up']))if(inp.pressed[a])f.buf[a]=.16;
+  for(const k in LEGACY)if(inp.pressed[k])inp.pressed[LEGACY[k]]=true;
+  if(inp.pressed.launch){inp.pressed.hand=true;inp.held.guard=true}
+  for(const a of ATKS.concat(['dodge','up']))if(inp.pressed[a])f.buf[a]=a==='hand'||a==='leg'?.28:.16;
   if(inp.pressed.finish&&G.fatOffer&&G.fatOffer.att===f){doFatal(f);return}
-  const fwdHeld=f.facing>0?inp.held.right:inp.held.left;
-  const low=a=>inp.held.guard&&a==='light'?'lowkick':inp.held.guard&&a==='medium'?'sweep':!inp.held.guard&&fwdHeld&&a==='medium'&&f.C.clips.fwd?'fwd':a;
   let dashReq=inp.pressed.dashF?1:inp.pressed.dashB?-1:0;
   for(const [k,dv] of [['left',-1],['right',1]])if(inp.pressed[k]){const now=performance.now()/1000;if(f.tap&&f.tap.d===dv&&now-f.tap.t<.26){dashReq=dv===f.facing?1:-1;f.tap=null}else f.tap={d:dv,t:now}}
   for(const a in f.buf){f.buf[a]-=dt;if(f.buf[a]<=0)delete f.buf[a]}
+  if(f.strT>0){f.strT-=dt;if(f.strT<=0&&f.state!=='attack'){f.str=0;f.inString=false}}
   const dirIn=(inp.held.right?1:0)-(inp.held.left?1:0);
   if(f.ko)return;
   const free=['idle','walk','block'].includes(f.state)||(f.state==='land'&&f.st>.06);
-  if(f.state==='attack'){
-    for(const a of ATKS)if(f.buf[a]&&canCancel(f,low(a))){delete f.buf[a];startAttack(f,low(a));return}
+  const tryAtk=(chain)=>{for(const a of ATKS){if(!f.buf[a])continue;const nm=resolveAtk(f,a,inp);if(!nm){delete f.buf[a];SFX.play('ui_lock');continue}
+      const isStr=(a==='hand'||a==='leg')&&!inp.held.guard;
+      if(chain&&!canChain(f,nm==='special'?'special':nm==='heavy'?'heavy':'string'))continue;
+      delete f.buf[a];if(startAttack(f,nm,isStr))return true}return false};
+  if(f.state==='attack'){if(tryAtk(true))return;
     if(f.clipName==='launch'&&!f.clip.leap&&f.hitSet.size&&f.buf.up&&f.ct>.24){delete f.buf.up;f.state='prejump';f.st=0;f.clip=null;f.clipName=null;f.jumpDir=dirIn;return}
     return}
-  if(f.state==='air'){if(!f.airUsed){for(const a of ['light','medium','heavy','launch'])if(f.buf[a]){delete f.buf[a];f.airUsed=true;f.state='attack';f.st=0;const nm=a==='light'?'airk':'air';f.setClip(nm,.04);SFX.whoosh('air',f.C.el);return}}return}
+  if(f.state==='air'){if(!f.airUsed){for(const a of ['hand','leg'])if(f.buf[a]){delete f.buf[a];f.airUsed=true;f.state='attack';f.st=0;f.setClip(a==='leg'?'airk':'air',.04);SFX.whoosh('air',f.C.el);return}}return}
   if(!free&&!(f.state==='dash'&&f.st>.06))return;
-  if(f.state==='dash'){for(const a of ATKS)if(f.buf[a]){delete f.buf[a];const v=f.vx;if(startAttack(f,low(a))){f.vx=v*.7;return}}return}
+  if(f.state==='dash'){const v=f.vx;if(tryAtk(false)){f.vx=v*.7}return}
   if(f.y<=0&&f.lockF<=0)f.facing=o.x>=f.x?1:-1;
   if(dashReq&&!inp.held.guard){if(dashReq>0){f.setState('dash',.05);f.vx=f.facing*1650;spawnAfter(f);puff(f.x,.9);SFX.whoosh('dodge')}else{f.setState('hop',.05);f.y=1;f.vy=f.C.flipHop?1050:900;f.vx=-f.facing*(f.C.flipHop?1050:950);f.inv=.16;spawnAfter(f);puff(f.x,.9);SFX.whoosh('dodge')}return}
   if(f.lockF>0&&inp.held.guard&&dirIn)f.facing=dirIn;
-  for(const a of ATKS)if(f.buf[a]){delete f.buf[a];if(startAttack(f,low(a)))return}
+  if(f.strT<=0){f.str=0;f.inString=false}
+  if(tryAtk(false))return;
   if(f.buf.dodge){delete f.buf.dodge;f.setState('dodge',.04);f.vx=-f.facing*f.C.dodge;f.inv=.26;spawnAfter(f);SFX.whoosh('dodge');return}
   if(f.buf.up){delete f.buf.up;f.setState('prejump',.04);f.jumpDir=dirIn;return}
   if(inp.held.guard){f.setState('block',.05);f.vx=0;return}
@@ -1348,7 +1371,7 @@ function step(f,o,dt){
     if(c.afterimage&&f.ct<c.afterimage&&Math.random()<.5)spawnAfter(f);
     f.animate(dt);
     tryHits(f,o,t0,f.ct);fireEvents(f,o,t0,f.ct);
-    if(f.ct>=c.len||((f.clipName==='air'||f.clipName==='airk')&&f.y<=0&&f.vy<=0&&f.ct>.1)){f.clip=null;f.clipName=null;f.normSpin();f.state=f.y>0?'air':'idle';f.st=0;f.from=copyPose(f.pose);f.xf=.1;f.vanish=0;if(f.state==='air')f.airUsed=false}
+    if(f.ct>=c.len||((f.clipName==='air'||f.clipName==='airk')&&f.y<=0&&f.vy<=0&&f.ct>.1)){if(f.inString){f.strT=.4;if(f.str>=5){f.str=0;f.inString=false}}f.clip=null;f.clipName=null;f.normSpin();f.state=f.y>0?'air':'idle';f.st=0;f.from=copyPose(f.pose);f.xf=.1;f.vanish=0;if(f.state==='air')f.airUsed=false}
   }else f.animate(dt);
   switch(f.state){
     case 'prejump':if(f.st>.07){f.state='air';f.st=0;f.from=copyPose(f.pose);f.xf=.1;f.vy=f.C.jump;f.vx=(f.jumpDir||0)*f.C.walk;f.y=1;f.airUsed=false;dust(f.x,6,.8);puddleSplash(f,1.2);SFX.play('jump');f.impulse(.5)}break;
@@ -1503,24 +1526,22 @@ function aiRead(ai,f,o,dt){
       }}}
   if(ai.holdT.guard>0)return inp;
 
-  /* combo routes */
-  if(ai.route.length){const nx=ai.route[0];
-    if(f.state==='attack'){
-      if(f.hitSet.size){
-        if(nx==='up'&&f.clipName==='launch'&&f.ct>.24){inp.pressed.up=true;ai.route.shift()}
-        else if(nx==='lowkick'&&canCancel(f,'lowkick')){inp.held.guard=true;inp.pressed.light=true;ai.route.shift()}
-        else if(nx!=='up'&&nx!=='air'&&nx!=='lowkick'&&canCancel(f,nx)){inp.pressed[nx]=true;ai.route.shift()}
-      }else{const h=f.clip&&f.clip.hit.length?f.clip.hit[f.clip.hit.length-1]:null;if(h&&f.ct>h[1]+.02)ai.route=[]}
-    }else if(f.state==='air'){if(nx==='air'&&Math.abs(o.y-f.y)<520&&d<560){inp.pressed[Math.random()<.5?'light':'medium']=true;ai.route.shift()}}
-    else if(nx==='up'||nx==='air')ai.route=[];
+  /* strings: keep tapping while the string can continue, sometimes cancel into a special */
+  if(ai.route.length){
+    if(f.state==='attack'){const nx=ai.route[0];
+      if(nx==='special'&&canChain(f,'special')){inp.pressed.specH=true;ai.route=[]}
+      else if(nx==='heavy'&&canChain(f,'heavy')){inp.pressed.specM=true;ai.route=[]}
+      else if((nx==='hand'||nx==='leg')&&canChain(f,'string')){inp.pressed[nx]=true;ai.route.shift()}
+      else if(!f.hitSet.size&&f.clip&&f.clip.hit.length&&f.ct>f.clip.hit[f.clip.hit.length-1][1]+.05)ai.route=[]}
+    else if(f.state==='air'){if(Math.abs(o.y-f.y)<520&&d<560){inp.pressed[Math.random()<.5?'hand':'leg']=true;ai.route=[]}}
     if(f.state==='attack'||f.state==='air'||f.state==='prejump')return inp;
   }
   if(G.fatOffer&&G.fatOffer.att===f&&Math.random()<[0,.04,.2][ai.level]){inp.pressed.finish=true;return inp}
   if(!['idle','walk','block','land'].includes(f.state))return inp;
-  if((o.state==='block'||o.state==='blockstun')&&d<Math.min(500,C.ai.close+40)&&Math.random()<(.05+ai.level*.06)){inp.held.guard=true;inp.pressed[Math.random()<.55?'light':'medium']=true;ai.route=Math.random()<.5?['lowkick']:[];return inp}
+  if((o.state==='block'||o.state==='blockstun')&&d<Math.min(500,C.ai.close+40)&&Math.random()<(.05+ai.level*.06)){inp.held.guard=true;inp.pressed.leg=true;ai.route=[];return inp}
 
   /* reflexes that do not wait for the think timer */
-  if(o.air&&o.state!=='tumble'&&d<620&&o.vy<200&&Math.random()<D.anti*dt*8){inp.pressed.launch=true;ai.route=D.chain>=4?['up','air']:[];return inp}
+  if(o.air&&o.state!=='tumble'&&d<620&&o.vy<200&&Math.random()<D.anti*dt*8){inp.held.guard=true;inp.pressed.hand=true;ai.route=[];return inp}
   if(o.state==='attack'&&o.clip&&!upcomingHit(o)&&o.clip.hit.length&&d<C.ai.close+80&&!ai.punished){ai.punished=true;if(Math.random()<D.punish){startRoute(ai,inp,f,o);return inp}}
   if(o.state!=='attack')ai.punished=false;
   if((o.state==='hurt'||o.state==='tumble')&&d<C.ai.close&&f.state!=='attack'&&Math.random()<D.punish*dt*10){startRoute(ai,inp,f,o);return inp}
@@ -1532,26 +1553,24 @@ function aiRead(ai,f,o,dt){
   ai.think=rand(D.think[0],D.think[1]);ai.walkT=0;
   const r=Math.random();
   if(o.state==='down'||o.state==='rise'){if(d>C.ai.close+200){walk(ai,tw,.3)}return inp}
-  if(f.ori>=50&&d<SPECIAL_RANGE[f.key]&&r<D.special*.14&&o.state!=='attack'){inp.pressed.special=true;return inp}
+  if(f.ori>=100&&d<SPECIAL_RANGE[f.key]&&r<D.special*.3&&o.state!=='attack'){inp.pressed.specH=true;return inp}
   if(d<C.ai.close){
     if(r<D.aggr){startRoute(ai,inp,f,o)}
     else if(r<D.aggr+.12){ai.holdT.guard=rand(.2,.45)}
     else if(r<D.aggr+.2&&C.ai.style!=='rush'){if(ai.level>0&&Math.random()<.5)inp.pressed.dashB=true;else inp.pressed.dodge=true}
     else walk(ai,-tw,rand(.2,.4));
     return inp}
-  if(C.ai.zone&&ai.zoneCD<=0&&d>650&&r<(C.ai.style==='zone'?.6:.42)){inp.pressed[C.ai.zone]=true;ai.zoneCD=rand(1.1,2.4)/(1+ai.level*.4);return inp}
-  if(f.key==='esu'&&ai.zoneCD<=0&&d>500&&d<1100&&r<.3){inp.pressed.medium=true;ai.zoneCD=1.2;return inp}
+  if(f.meterM>=100&&ai.zoneCD<=0&&d>(f.key==='ogun'?300:650)&&r<(C.ai.style==='zone'?.7:.5)){inp.pressed.specM=true;ai.zoneCD=rand(1.1,2.4)/(1+ai.level*.4);return inp}
   if(ai.level>0&&d>900&&r<.25+ai.level*.1){inp.pressed.dashF=true;return inp}
-  if(d>C.ai.close&&d<C.ai.close+320&&r<.12+ai.level*.08){inp.held[toward]=true;inp.pressed.medium=true;return inp}
-  if(r<D.jump*3&&d<1100&&d>500){inp.pressed.up=true;ai.plan=[];ai.route=['air'];walk(ai,tw,.5);return inp}
+  if(r<D.jump*3&&d<1100&&d>500){inp.pressed.up=true;ai.plan=[];ai.route=['hand'];walk(ai,tw,.5);return inp}
   if(C.ai.style==='zone'&&d<760&&r<.35){walk(ai,-tw,rand(.25,.5));return inp}
   walk(ai,tw,rand(.2,.55));
   return inp;
 }
 function walk(ai,dir,t){ai.walkDir=dir;ai.walkT=t}
-function startRoute(ai,inp,f,o){const opts=ROUTES[Math.min(2,ai.level)];let r=pick(opts).slice();
-  if(r.includes('special')&&f.ori<50)r=r.filter(x=>x!=='special');
-  r=r.slice(0,Math.max(1,ai.D.chain+(ai.level===2?1:0)));
+function startRoute(ai,inp,f,o){const n=[2,4,5][Math.min(2,ai.level)],main=Math.random()<.55?'hand':'leg',r=[];
+  for(let i=0;i<n;i++)r.push(Math.random()<.8?main:(main==='hand'?'leg':'hand'));
+  if(ai.level>0&&f.ori>=100&&Math.random()<.5)r.splice(Math.min(r.length,3),9,'special');else if(f.meterM>=100&&Math.random()<.35)r.splice(Math.min(r.length,3),9,'heavy');
   inp.pressed[r.shift()]=true;ai.route=r}
 
 /* training spirit */
@@ -2093,22 +2112,22 @@ function launchVS(cfg){fadeTo(()=>{
  })}
 
 /* ── HUD ── */
-function buildHud(){const [A,B]=FIGHT.f;const side=(f,r)=>`<div class="side ${r?'r':''}"><div class="por"><img alt="" src="${portraitURL(f.key,'head')}"></div><div class="bars"><div class="nm"><b>${f.skin==='spirit'?f.C.spirit:f.C.name}</b><div class="wins"${FIGHT.training?' hidden':''}><i></i><i></i></div></div><div class="hp"><i class="tr"></i><i class="fl"></i></div><div class="ori"><span>ORÍ</span><div class="seg2"><i><b></b></i><i><b></b></i></div></div></div></div>`;
+function buildHud(){const [A,B]=FIGHT.f;const side=(f,r)=>`<div class="side ${r?'r':''}"><div class="por"><img alt="" src="${portraitURL(f.key,'head')}"></div><div class="bars"><div class="nm"><b>${f.skin==='spirit'?f.C.spirit:f.C.name}</b><div class="wins"${FIGHT.training?' hidden':''}><i></i><i></i></div></div><div class="hp"><i class="tr"></i><i class="fl"></i></div><div class="ori m"><span>ÀṢẸ</span><div class="seg2"><i><b></b></i></div></div><div class="ori h"><span>ORÍ</span><div class="seg2"><i><b></b></i></div></div></div></div>`;
   $('#hud').innerHTML=side(A,0)+`<div class="mid"><div class="timer" id="timer">${FIGHT.training?'∞':60}</div><span class="rnd" id="rndLbl"></span></div>`+side(B,1);
-  const sides=$$('#hud .side');FIGHT.f.forEach((f,i)=>{const s=sides[i];f.hud={hp:s.querySelector('.hp'),fl:s.querySelector('.fl'),tr:s.querySelector('.tr'),ori:s.querySelector('.ori'),segs:[...s.querySelectorAll('.seg2 i')],wins:[...s.querySelectorAll('.wins i')]};
+  const sides=$$('#hud .side');FIGHT.f.forEach((f,i)=>{const s=sides[i];f.hud={hp:s.querySelector('.hp'),fl:s.querySelector('.fl'),tr:s.querySelector('.tr'),ori:s.querySelector('.ori.h'),orm:s.querySelector('.ori.m'),segs:[s.querySelector('.ori.m i'),s.querySelector('.ori.h i')],wins:[...s.querySelectorAll('.wins i')]};
     s.querySelectorAll('.seg2 b').forEach(b=>b.style.setProperty('--ofill',f.C.oriFill));s.style.setProperty('--ofill',f.C.oriFill)});
   for(const c of ['#combo0','#combo1'])$(c).innerHTML='<div class="n"></div><div class="l">HITS</div><div class="d"></div>';
-  HUDC.timer=$('#timer');HUDC.rnd=$('#rndLbl');HUDC.ori=$('#pad .orib');HUDC.last={}}
+  HUDC.timer=$('#timer');HUDC.rnd=$('#rndLbl');HUDC.bm=$('#pad .spm');HUDC.bh=$('#pad .sph');HUDC.last={}}
 const HUDC={};
 function hudTick(dt){const [A,B]=FIGHT.f;if(!A||!A.hud)return;
   FIGHT.f.forEach((f,i)=>{const r=f.hp/f.maxHp;if(f.trail>r)f.trail=Math.max(r,f.trail-dt*.55);else f.trail=r;
     f.hud.fl.style.transform=`scaleX(${r})`;f.hud.tr.style.transform=`scaleX(${f.trail})`;f.hud.hp.classList.toggle('low',r<.25);
-    const o=f.ori;f.hud.segs.forEach((s,j)=>{const v=clamp((o-j*50)/50,0,1);s.firstChild.style.transform=`scaleX(${v})`;s.classList.toggle('full',v>=1)});f.hud.ori.classList.toggle('ready',o>=50);
+    [f.meterM,f.ori].forEach((o,j)=>{const s=f.hud.segs[j],v=clamp(o/100,0,1);s.firstChild.style.transform=`scaleX(${v})`;s.classList.toggle('full',v>=1)});f.hud.orm.classList.toggle('ready',f.meterM>=100);f.hud.ori.classList.toggle('ready',f.ori>=100);
     f.hud.wins.forEach((w,j)=>w.classList.toggle('on',f.wins>j));
     const c=$('#combo'+i);if(f.combo>=2){c.classList.add('on');c.firstChild.textContent=f.combo;c.lastChild.textContent=f.comboDmg+' damage'}else c.classList.remove('on')});
   const tm=FIGHT.training?'∞':Math.ceil(Math.max(0,FIGHT.timer));if(HUDC.last.t!==tm){HUDC.timer.textContent=tm;HUDC.last.t=tm;HUDC.timer.classList.toggle('hot',!FIGHT.training&&FIGHT.timer<10)}
   const rl=FIGHT.training?'Training':`Round ${FIGHT.round}`;if(HUDC.last.r!==rl){HUDC.rnd.textContent=rl;HUDC.last.r=rl}
-  if(HUDC.ori){const p=Math.round(A.ori);if(HUDC.last.o!==p){HUDC.ori.style.setProperty('--p',p+'%');HUDC.ori.classList.toggle('ready',A.ori>=50||FIGHT.training);HUDC.last.o=p}}}
+  for(const [el,v,k] of [[HUDC.bm,A.meterM,'m'],[HUDC.bh,A.ori,'h']]){if(!el)continue;const p=Math.round(v);if(HUDC.last[k]!==p){el.style.setProperty('--p',p+'%');el.classList.toggle('ready',v>=100||FIGHT.training);HUDC.last[k]=p}}}
 
 /* ── pause, options, how to play ── */
 function openPause(){if(UI.base!=='fight'||UI.over.length||FIGHT.phase==='over')return;openOver('pause');MUSIC.muffle(true);SFX.play('ui_back')}
@@ -2122,20 +2141,20 @@ const G_SQ='<svg class="glyph" viewBox="0 0 24 24"><rect x="5" y="5" width="14" 
 const GLYPH={'□':G_SQ,'△':G_TRI,'○':G_CI,'✕':G_X};
 function htShow(i){$$('#htTabs button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.i===i));const B=$('#htBody'),tc=useTouch();
   if(i===0)B.innerHTML=`<p class="tip">Win two rounds to win the match. Each round lasts 60 seconds; if time runs out the god with more health takes it.</p>
-    <p class="tip"><b>Orí</b> is your destiny meter. It fills as you strike and as you suffer. At half full your god can unleash a signature move that cancels out of any connecting attack.</p>
-    <p class="tip"><b>Chains.</b> Light flows into medium, medium into heavy or launch. A launch sends the enemy skyward: jump straight after it and attack to juggle them.</p>
-    <p class="tip"><b>Defence.</b> Hold guard to block attacks from the front at the cost of a sliver of health. Dodge slips backwards and passes through attacks.</p>
-    <p class="tip"><b>Leg attacks.</b> Hold down (guard) and press light for a low kick or medium for a leg sweep. Low attacks go straight through a guard and the sweep trips your rival off their feet. Chain them: □ □ ↓□ ↓□ ↓△.</p>
-    <p class="tip"><b>Movement.</b> Tap forward twice to dash in (attack out of it for a running strike) or back twice to hop away. Hold forward and press medium for your god's command move.</p>
-    <p class="tip"><b>Jump attacks.</b> Jump and press light for a flying kick or medium for an overhead strike.</p>
+    <p class="tip"><b>Two attacks.</b> □ Hand and ✕ Leg. These are gods, so every blow carries their power. Tap either up to five times to build a string; the fifth blow is a heavy god-powered finisher. Mix them (□ □ ✕ ✕ □) to change the string as it builds.</p>
+    <p class="tip"><b>Àṣẹ</b> fills fast as you land combos. When full, △ unleashes your god's medium special.</p>
+    <p class="tip"><b>Orí</b> fills slowly from combos and over time. When full, ○ unleashes your god's heavy special. Both specials can cancel out of a connecting string.</p>
+    <p class="tip"><b>Low attacks.</b> Hold down and press □ to launch your rival skyward (jump after it to juggle) or ✕ to sweep them off their feet. Sweeps go straight through a guard.</p>
+    <p class="tip"><b>Defence.</b> Hold block to stop attacks from the front at the cost of a sliver of health. Flick back twice to hop away and slip past attacks.</p>
+    <p class="tip"><b>Movement.</b> Flick forward twice to dash in and attack out of it for a running strike. Jump and press □ or ✕ for an air strike.</p>
     <p class="tip"><b>Fatality.</b> Land a combo of four hits or more when your rival is nearly dead and a FINISH button appears. Tap it (or press F) before it fades to end the fight with your god's fatality.</p>
     <p class="tip"><b>Èṣù's Crossroads</b> sends two Èṣùs at you from both sides. Only one is real. Hold guard and push toward the true Èṣù to block it.</p>
     <p class="tip"><b>Arenas react.</b> Water pools where Yemọja's tides fall, iron cracks the floor, fire scorches it and Ṣàngó's storm can strike anywhere.</p>`;
-  else if(i===1)B.innerHTML=`<table class="ktab"><caption>Keyboard, player 1</caption><tr><td>Move</td><td><kbd>A</kbd> <kbd>D</kbd></td></tr><tr><td>Jump</td><td><kbd>W</kbd></td></tr><tr><td>Guard (hold)</td><td><kbd>S</kbd></td></tr><tr><td>Light · Medium · Heavy</td><td><kbd>J</kbd> <kbd>K</kbd> <kbd>L</kbd></td></tr><tr><td>Launch</td><td><kbd>I</kbd></td></tr><tr><td>Orí special</td><td><kbd>U</kbd></td></tr><tr><td>Dodge</td><td><kbd>Space</kbd></td></tr><tr><td>Low kick · Sweep</td><td><kbd>S</kbd>+<kbd>J</kbd> · <kbd>S</kbd>+<kbd>K</kbd></td></tr><tr><td>Command move</td><td>Forward + <kbd>K</kbd></td></tr><tr><td>Dash · Back hop</td><td>Double tap forward · back</td></tr><tr><td>Fatality</td><td><kbd>F</kbd> when FINISH shows</td></tr><tr><td>Pause</td><td><kbd>Esc</kbd></td></tr></table>
-    <table class="ktab"><caption>Keyboard, player 2</caption><tr><td>Move · Jump · Guard</td><td><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td></tr><tr><td>Light · Medium · Heavy</td><td><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> numpad or <kbd>,</kbd> <kbd>.</kbd> <kbd>/</kbd></td></tr><tr><td>Launch · Special · Dodge</td><td><kbd>5</kbd> <kbd>4</kbd> <kbd>0</kbd> numpad or <kbd>'</kbd> <kbd>;</kbd> <kbd>Enter</kbd></td></tr></table>
-    <table class="ktab"><caption>Gamepad</caption><tr><td>Light · Medium</td><td>${G_SQ} ${G_TRI}</td></tr><tr><td>Heavy · Launch</td><td>${G_CI} ${G_X}</td></tr><tr><td>Orí special</td><td>R1 or R2</td></tr><tr><td>Guard · Dodge</td><td>L2 · L1</td></tr><tr><td>Move and jump</td><td>Stick or d-pad</td></tr><tr><td>Low kick · Sweep</td><td>Down + ${G_SQ} · Down + ${G_TRI}</td></tr><tr><td>Fatality</td><td>Select or R3</td></tr></table>
-    <table class="ktab"><caption>Touch</caption><tr><td>Joystick</td><td>Left half of the screen: push sideways to walk, up to jump, down to guard</td></tr><tr><td>Face buttons</td><td>${G_SQ} Light · ${G_TRI} Medium · ${G_CI} Heavy · ${G_X} Launch</td></tr><tr><td>Top row</td><td>Shield · Orí special · Dodge</td></tr><tr><td>Low kick · Sweep</td><td>Joystick down + ${G_SQ} · Joystick down + ${G_TRI}</td></tr><tr><td>Command move · Dash</td><td>Joystick forward + ${G_TRI} · flick the joystick twice</td></tr><tr><td>Fatality</td><td>Tap FINISH when it appears</td></tr></table>`;
-  else{const C=CHARS[ROSTER[i-2]];B.innerHTML=`<p class="tip"><b>${C.name}</b>, ${C.title}. ${C.style}.</p><dl class="ml">${C.moves.map(m=>{const key=tc?(GLYPH[m[1]]||m[1]||m[0]):(m[0].length===1?`<kbd>${m[0]}</kbd>`:m[0]);return`<dt>${key}</dt><dd><b>${m[2]}</b>${m[3]?' · '+m[3]:''}</dd>`}).join('')}</dl><p class="tip"><b>${C.sig[0]}.</b> ${C.sig[1]}</p>`}}
+  else if(i===1)B.innerHTML=`<table class="ktab"><caption>Keyboard, player 1</caption><tr><td>Move</td><td><kbd>A</kbd> <kbd>D</kbd></td></tr><tr><td>Jump</td><td><kbd>W</kbd></td></tr><tr><td>Guard (hold)</td><td><kbd>S</kbd></td></tr><tr><td>Hand · Leg</td><td><kbd>J</kbd> <kbd>K</kbd></td></tr><tr><td>Medium special (Àṣẹ)</td><td><kbd>L</kbd></td></tr><tr><td>Heavy special (Orí)</td><td><kbd>U</kbd></td></tr><tr><td>Launch · Sweep</td><td><kbd>S</kbd>+<kbd>J</kbd> · <kbd>S</kbd>+<kbd>K</kbd></td></tr><tr><td>Dash · Back hop</td><td>Double tap forward · back</td></tr><tr><td>Fatality</td><td><kbd>F</kbd> when FINISH shows</td></tr><tr><td>Pause</td><td><kbd>Esc</kbd></td></tr></table>
+    <table class="ktab"><caption>Keyboard, player 2</caption><tr><td>Move · Jump · Guard</td><td><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td></tr><tr><td>Hand · Leg</td><td><kbd>1</kbd> <kbd>2</kbd> numpad or <kbd>,</kbd> <kbd>.</kbd></td></tr><tr><td>Medium · Heavy special</td><td><kbd>3</kbd> <kbd>4</kbd> numpad or <kbd>/</kbd> <kbd>;</kbd></td></tr></table>
+    <table class="ktab"><caption>Gamepad</caption><tr><td>Hand · Leg</td><td>${G_SQ} ${G_X}</td></tr><tr><td>Medium · Heavy special</td><td>${G_TRI} ${G_CI}</td></tr><tr><td>Block</td><td>L2 or stick down</td></tr><tr><td>Move and jump</td><td>Stick or d-pad</td></tr><tr><td>Launch · Sweep</td><td>Down + ${G_SQ} · Down + ${G_X}</td></tr><tr><td>Fatality</td><td>Select or R3</td></tr></table>
+    <table class="ktab"><caption>Touch</caption><tr><td>Joystick</td><td>Left side: push sideways to walk, up to jump, down to crouch</td></tr><tr><td>Block</td><td>Shield button, bottom left</td></tr><tr><td>Attacks</td><td>${G_SQ} Hand · ${G_X} Leg</td></tr><tr><td>Specials</td><td>${G_TRI} Àṣẹ · ${G_CI} Orí, ready when the ring is full</td></tr><tr><td>Launch · Sweep</td><td>Joystick down + ${G_SQ} · Joystick down + ${G_X}</td></tr><tr><td>Dash · Back hop</td><td>Flick the joystick forward twice · back twice</td></tr><tr><td>Fatality</td><td>Tap FINISH when it appears</td></tr></table>`;
+  else{const C=CHARS[ROSTER[i-2]];B.innerHTML=`<p class="tip"><b>${C.name}</b>, ${C.title}. ${C.style}.</p><dl class="ml">${C.moves.map(m=>{const key=tc?(m[1].replace(/[□△○✕]/g,c=>GLYPH[c])||m[0]):(m[0].length===1?`<kbd>${m[0]}</kbd>`:m[0]);return`<dt>${key}</dt><dd><b>${m[2]}</b>${m[3]?' · '+m[3]:''}</dd>`}).join('')}</dl><p class="tip"><b>${C.sig[0]}.</b> ${C.sig[1]}</p>`}}
 
 /* ── results and ending ── */
 function showResult(win){const cfg=MATCH.cfg,[A,B]=FIGHT.f,w=win===0?A:B;
@@ -2153,15 +2172,15 @@ function showEnding(){const k=MATCH.cfg.p1,C=CHARS[k];$('#endName').textContent=
   fadeTo(()=>{setStage('kingdom');go('ending');const f=new Fighter(0,k);f.x=0;f.setState('win',.01);f.glow=1;UI.show=[f];CAM.x=0;CAM.tx=0;CAM.tz=1.1;MUSIC.start('victory','kingdom')})}
 
 /* ───────── Input, match flow, main loop and boot ───────── */
-const ACTS=['left','right','up','guard','light','medium','heavy','launch','special','dodge','finish'];
-const KEYS={p1:{left:['KeyA'],right:['KeyD'],up:['KeyW'],guard:['KeyS'],light:['KeyJ'],medium:['KeyK'],heavy:['KeyL'],launch:['KeyI'],special:['KeyU'],dodge:['Space'],finish:['KeyF']},
-  p2:{left:['ArrowLeft'],right:['ArrowRight'],up:['ArrowUp'],guard:['ArrowDown'],light:['Numpad1','Comma'],medium:['Numpad2','Period'],heavy:['Numpad3','Slash'],launch:['Numpad5','Quote'],special:['Numpad4','Semicolon'],dodge:['Numpad0','Enter','NumpadEnter'],finish:['Numpad6','Backslash']}};
+const ACTS=['left','right','up','guard','hand','leg','specM','specH','launch','dodge','finish'];
+const KEYS={p1:{left:['KeyA'],right:['KeyD'],up:['KeyW'],guard:['KeyS'],hand:['KeyJ'],leg:['KeyK'],specM:['KeyL'],launch:['KeyI'],specH:['KeyU'],dodge:['Space'],finish:['KeyF']},
+  p2:{left:['ArrowLeft'],right:['ArrowRight'],up:['ArrowUp'],guard:['ArrowDown'],hand:['Numpad1','Comma'],leg:['Numpad2','Period'],specM:['Numpad3','Slash'],launch:['Numpad5','Quote'],specH:['Numpad4','Semicolon'],dodge:['Numpad0','Enter','NumpadEnter'],finish:['Numpad6','Backslash']}};
 const KD=new Set();const PREV=[{},{}];
 const TOUCH={held:new Set(),press:new Set(),joy:{id:null,dx:0,dy:0}};
 const EMPTY={held:{},pressed:{}};
 function getPads(){try{return[...(navigator.getGamepads?navigator.getGamepads():[])].filter(p=>p&&p.connected)}catch(e){return[]}}
 function padHeld(p,h){const b=i=>p.buttons[i]&&p.buttons[i].pressed,ax=p.axes||[];
-  h.light||=b(2);h.medium||=b(3);h.heavy||=b(1);h.launch||=b(0);h.special||=b(5)||b(7);h.guard||=b(6)||b(13)||(ax[1]>.72);h.dodge||=b(4);h.finish||=b(8)||b(10)||b(11);
+  h.hand||=b(2);h.leg||=b(0);h.specM||=b(3);h.specH||=b(1)||b(5)||b(7);h.guard||=b(6)||b(13)||(ax[1]>.72);h.dodge||=b(4);h.finish||=b(8)||b(10)||b(11);
   h.up||=b(12)||(ax[1]<-.6);h.left||=b(14)||(ax[0]<-.4);h.right||=b(15)||(ax[0]>.4)}
 function readPlayer(idx){
   const two=MATCH.cfg&&MATCH.cfg.p2human;const maps=idx===0?(two?[KEYS.p1]:[KEYS.p1,KEYS.p2]):[KEYS.p2];
@@ -2232,8 +2251,8 @@ function simulate(dt){
   playerTick(A,B,inps[0],sdt);playerTick(B,A,inps[1],sdt);
   step(A,B,sdt);step(B,A,sdt);separate(A,B);hazTick(sdt);fxTick(sdt);stageTick(sdt);
   for(const f of P.f){for(const q of f.trailPts)q.t+=sdt;f.trailPts=f.trailPts.filter(q=>q.t<.16);if(f.trailPts.length>18)f.trailPts.splice(0,f.trailPts.length-18)}
-  if(P.phase==='fight'){for(const f of P.f)f.ori=Math.min(100,f.ori+1.2*sdt)}
-  if(P.training){for(const f of P.f){f.regenT-=sdt;if(f.regenT<=0&&f.hp<f.maxHp)f.hp=Math.min(f.maxHp,f.hp+f.maxHp*.6*sdt);if(f.hp<=0&&f.state==='down'){f.hp=1}}A.ori=Math.min(100,A.ori+30*sdt);B.ori=Math.min(100,B.ori+10*sdt)}
+  if(P.phase==='fight'){for(const f of P.f){f.ori=Math.min(100,f.ori+.9*sdt);f.meterM=Math.min(100,f.meterM+2.6*sdt)}}
+  if(P.training){for(const f of P.f){f.regenT-=sdt;if(f.regenT<=0&&f.hp<f.maxHp)f.hp=Math.min(f.maxHp,f.hp+f.maxHp*.6*sdt);if(f.hp<=0&&f.state==='down'){f.hp=1}}A.ori=Math.min(100,A.ori+30*sdt);B.ori=Math.min(100,B.ori+10*sdt);A.meterM=Math.min(100,A.meterM+40*sdt);B.meterM=Math.min(100,B.meterM+12*sdt)}
   else if(P.phase==='fight'){P.timer-=sdt;if(P.timer<=0){P.timer=0;timeOut()}}
   phaseTick(dt);
   if(P.phase==='fight'&&!P.training){const lo=Math.min(A.hp/A.maxHp,B.hp/B.maxHp),fin=A.wins===1&&B.wins===1;MUSIC.setInt(lo<.3||fin&&lo<.6||P.timer<12?3:lo<.65||P.round>1?2:1)}
@@ -2301,13 +2320,13 @@ function pollPadsMenu(){const pads=getPads();const h={};for(const p of pads){con
 
 /* ── touch ── */
 function setupTouch(){
-  for(const b of $$('#pad [data-k]')){const k=b.dataset.k;
+  for(const b of $$('#touch [data-k]')){const k=b.dataset.k;
     const up=()=>{TOUCH.held.delete(k);b.classList.remove('on')};
-    b.addEventListener('pointerdown',e=>{e.preventDefault();audioInit();try{b.setPointerCapture(e.pointerId)}catch(_){}TOUCH.held.add(k);TOUCH.press.add(k);b.classList.add('on')});
+    b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();audioInit();try{b.setPointerCapture(e.pointerId)}catch(_){}TOUCH.held.add(k);TOUCH.press.add(k);b.classList.add('on')});
     for(const ev of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(ev,up);
     b.addEventListener('contextmenu',e=>e.preventDefault())}
   const zone=$('#joyZone'),joy=$('#joy'),knob=joy.firstElementChild,J=TOUCH.joy;
-  const home=()=>{const r=zone.getBoundingClientRect();joy.style.left=Math.max(r.width*.24,joy.offsetWidth*.6+16)+'px';joy.style.top=(r.height-Math.max(joy.offsetHeight*.6+18,r.height*.3))+'px';knob.style.transform='';joy.classList.add('idle')};
+  const home=()=>{const r=zone.getBoundingClientRect();joy.style.left=Math.max(r.width*.4,joy.offsetWidth*.6+90)+'px';joy.style.top=(r.height-Math.max(joy.offsetHeight*.6+18,r.height*.3))+'px';knob.style.transform='';joy.classList.add('idle')};
   zone.addEventListener('pointerdown',e=>{if(J.id!=null)return;e.preventDefault();audioInit();J.id=e.pointerId;try{zone.setPointerCapture(e.pointerId)}catch(_){}const r=zone.getBoundingClientRect();J.ox=e.clientX-r.left;J.oy=e.clientY-r.top;joy.style.left=J.ox+'px';joy.style.top=J.oy+'px';joy.classList.remove('idle');J.dx=J.dy=0});
   zone.addEventListener('pointermove',e=>{if(e.pointerId!==J.id)return;const r=zone.getBoundingClientRect(),R=joy.offsetWidth/2||60;let dx=(e.clientX-r.left-J.ox)/R,dy=(e.clientY-r.top-J.oy)/R;const l=Math.hypot(dx,dy);if(l>1){dx/=l;dy/=l}
     // the base follows a thumb that drifts too far, so the stick never runs out of travel
