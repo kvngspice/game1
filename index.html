@@ -529,7 +529,7 @@ const dist=(a,b)=>Math.hypot(b[0]-a[0],b[1]-a[1]);
 const EASE={io:t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,out:t=>1-Math.pow(1-t,4),in:t=>t*t*t,lin:t=>t,back:t=>{const c=1.7;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2)},punch:t=>{const c=1.15;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2)}};
 
 /* canvas */
-const cv=$('#cv'),ctx=cv.getContext('2d');
+const cv=$('#cv');let ctx=cv.getContext('2d');  // let: the shadow pass points it at a small buffer for a moment
 let W=0,H=0,DPR=1;
 const VIEW={K:.4,groundY:0};
 const setT=m=>ctx.setTransform(m[0]*DPR,m[1]*DPR,m[2]*DPR,m[3]*DPR,m[4]*DPR,m[5]*DPR);
@@ -1283,6 +1283,9 @@ function tryHits(att,def,t0,t1){
     if(rel>-80&&rel<d.range*att.C.scale&&dy<540&&def.state!=='rise'&&def.state!=='down'&&!def.ko){att.hitSet.add(id);land(att,def,d)}
   }
 }
+// cornered: the defender has nowhere to slide, so the attacker is pushed back instead (no endless corner pressure)
+function wallPush(att,def,dirX,kb){if(!att||att===def||att.key==null)return;const lim=STAGE.half-100;
+  if(Math.sign(def.x)===dirX&&Math.abs(def.x)>lim-60)att.pbV=-dirX*kb*.8}
 function land(att,def,d,srcX,srcY){
   if(def.inv>0||def.ko&&def.state==='down')return false;
   const fromX=srcX!=null?srcX:att.x,dirX=d.dir||Math.sign(def.x-fromX)||att.facing;
@@ -1291,7 +1294,7 @@ function land(att,def,d,srcX,srcY){
   const el=att.C.el;
   const wasGuard=def.state==='block'||def.state==='blockstun';
   if(wasGuard&&!def.air&&facingSrc&&!d.unblock&&!d.low){
-    def.setState('blockstun',.03);def.stun=d.stun*.6;def.vx=dirX*d.push*.8;const chip=Math.round(d.dmg*(d.finisher?.22:.1));def.hp=Math.max(1,def.hp-chip);if(!STORY.on)def.ori=Math.min(100,def.ori+4);
+    def.setState('blockstun',.03);def.stun=d.stun*.6;def.vx=dirX*d.push*.8;wallPush(att,def,dirX,d.push*.8);const chip=Math.round(d.dmg*(d.finisher?.22:.1));def.hp=Math.max(1,def.hp-chip);if(!STORY.on)def.ori=Math.min(100,def.ori+4);
     G.stop=Math.max(G.stop,.05);shake(.1);
     if(def.C.el==='water')splash(hx,hitY,.8,-def.facing);else if(def.C.el==='storm'){spark(hx,hitY,'#cfe6ff',10,.9,2);light(hx,hitY,'150,190,255',300,.2)}else if(def.C.el==='fire'){embers(hx,hitY,10,500)}else if(def.C.el==='wind'){windBurst(hx,hitY,.6)}else spark(hx,hitY,'#bfe9ff',8,.8);
     SFX.play('block',def.C.el);def.impulse(.3);return true}
@@ -1309,7 +1312,7 @@ function land(att,def,d,srcX,srcY){
     if(def.hp<=0&&!heavy){def.vy=1100;def.vx=dirX*520;def.spinV=-420}
     else if(d.kind==='trip'){def.vy=700;def.vx=dirX*160;def.spinV=-900;dust(def.x,12,1.2)}
     else if(d.kind==='launch'){def.vy=d.big?2700:2150;def.vx=dirX*(d.big?60:160);def.spinV=-360}
-    else if(d.kind==='kd'){if(d.slam&&def.air){def.vy=-1600;def.bounce=1}else{def.vy=def.air?-900:1220;def.bounce=def.air?1:0}def.vx=dirX*d.push*1.25;def.spinV=-620}
+    else if(d.kind==='kd'){if(d.slam&&def.air){def.vy=-1600;def.bounce=1}else{def.vy=def.air?-900:1220;def.bounce=def.air?1:0}def.vx=dirX*d.push*1.25*(att&&att.key==='ogun'?1:1.1);def.spinV=-620}
     else if(d.kind==='air'){def.vy=Math.max(def.vy,0)+520/grav;def.vx=dirX*240;def.spinV=-200}
     else{def.vy=Math.max(def.vy,0)+760/grav;def.vx=dirX*180;def.spinV=-260}
     def.y=Math.max(def.y,yb(def)+1);
@@ -1319,7 +1322,10 @@ function land(att,def,d,srcX,srcY){
       def.stag={dur:ko?.42:.15,vy:ko?Math.max(def.vy,760):def.vy,vx:ko?dirX*360:def.vx,spinV:def.spinV};def.staggered=1;
       def.setState('stagger',.03);def.vy=0;def.y=yb(def);def.vx=dirX*(ko?260:420);def.flash=.07}
   }else if(def.state==='stagger'){const g=def.stag;def.setState('tumble',.03);def.vy=g.vy;def.vx=g.vx;def.spinV=g.spinV;def.y=yb(def)+1;def.bounced=0;def.flip=0;def.flailPh=rand(0,6)
-  }else{def.rxS=def.state==='hurt'?def.st:0;def.setState('hurt',.03);def.heavyHurt=d.kind==='mid'||(d.low&&wasGuard);def.stun=d.stun+(d.low&&wasGuard?.25:0);def.vx=dirX*d.push}
+  }else{def.rxS=def.state==='hurt'?def.st:0;def.setState('hurt',.03);def.heavyHurt=d.kind==='mid'||(d.low&&wasGuard);def.stun=d.stun+(d.low&&wasGuard?.25:0);
+    // heavy hits shove further and scrape the floor (Ògún's already land right, his stay as they were)
+    const hv=(d.kind==='mid'||d.heavyHit)&&!(att&&att.key==='ogun')&&!d.low,kb=d.push*(hv?1.38:1);def.vx=dirX*kb;if(hv)def.slideT=.32;
+    wallPush(att,def,dirX,kb)}
   def.flash=heavy?.07:.045;def.impulse(heavy?1.3:.7);att.impulse(.25);
   const ko=def.hp<=0;
   const storyImpact=STORY.on&&def===FIGHT.f[0];
@@ -1580,7 +1586,8 @@ function step(f,o,dt){
     case 'dash':if(f.st>.13)f.vx*=Math.pow(.02,dt);if(Math.random()<.5)spawnAfter(f);if(f.st>.27){
       if(STORY.on&&f===FIGHT.f[0]&&f.buf.up){delete f.buf.up;f.coyoteT=0;f.jumpDir=f.facing;f.state='prejump';f.st=0;f.xf=.035}
       else f.setState('idle',.1)}break;
-    case 'hurt':case 'blockstun':f.stun-=dt;f.vx*=Math.pow(.004,dt);if(f.stun<=0)f.setState(f.state==='blockstun'?'block':'idle',.1);break;
+    case 'hurt':case 'blockstun':f.stun-=dt;f.vx*=Math.pow(.004,dt);
+      if(f.slideT>0){f.slideT-=dt;if(Math.abs(f.vx)>110&&Math.random()<dt*28&&!G.lowFx)dust(f.x-Math.sign(f.vx)*40,2,.55)}if(f.stun<=0)f.setState(f.state==='blockstun'?'block':'idle',.1);break;
     case 'dodge':f.vx*=Math.pow(.02,dt);if(f.st<.12&&Math.random()<.6)spawnAfter(f);if(f.st>.3)f.setState('idle',.12);break;
     case 'stagger':f.vx*=Math.pow(.06,dt);if(f.st>f.stag.dur){const g=f.stag;f.setState('tumble',.04);f.vy=g.vy;f.vx=g.vx;f.spinV=g.spinV;f.y=yb(f)+1;f.bounced=0;f.flailPh=rand(0,6);f.flip=0;dust(f.x,6,.8);SFX.whoosh('heavy',f.C.el,f)}break;
     case 'tumble':{const lim=f.flip?-300:(f.bounced?-88:-58);if(f.rot<lim+30)f.spinV*=Math.pow(.01,dt);f.rot=Math.max(f.rot+f.spinV*dt,lim);break}
@@ -1615,6 +1622,7 @@ function step(f,o,dt){
     else f.vy=0}
   if(f.y<=(f.gy||0)+.5&&!airborne){f.lastG=G.t;if(f.state!=='prejump')f.jumped=0}
   if(f.y<=(f.gy||0)+.5&&!airborne&&!['walk','dodge','attack'].includes(f.state)&&f.state!=='hurt')f.vx*=Math.pow(.002,dt);
+  if(f.pbV){f.x+=f.pbV*dt;f.pbV*=Math.pow(.004,dt);if(Math.abs(f.pbV)<8)f.pbV=0}
   f.x=clamp(f.x,-STAGE.half+100,STAGE.half-100);
   if(f.comboT>0){f.comboT-=dt;if(f.comboT<=0&&!['tumble','down','hurt'].includes(o.state)){f.combo=0;f.comboDmg=0}}
 }
@@ -1922,9 +1930,40 @@ function drawGrade(){resetT();if(STAGE.gradeC)ctx.drawImage(STAGE.gradeC,0,0,W,H
 /* fighters */
 const TRAIL_PART={weapon:'weapon',handL:'hL',handR:'hR',footF:'foot_f'};
 function trailPoints(f,kind){const tp=f.C.trail[kind];if(!tp)return null;const M=solve(f.C,f.pose,f);const Cm=charMatrix(f,f.x,f.y,f.facing,f.pose.sq);const m=mul(Cm,M[TRAIL_PART[kind]]);return[ap(m,tp[0][0],tp[0][1]),ap(m,tp[1][0],tp[1][1])]}
-function drawShadow(f,x){x=x??f.x;const gy=f.gy||0;if(gy<-1e5)return;const [sx,sy]=toScreen(x,gy);const s=Math.max(.35,1-(f.y-gy)/900),k=VIEW.K*camZ();resetT();
-  const g=ctx.createRadialGradient(sx,sy+4,0,sx,sy+4,f.C.shadow*k*s*(f.state==='down'?1.7:1));g.addColorStop(0,`rgba(8,3,1,${.55*s})`);g.addColorStop(1,'rgba(8,3,1,0)');
-  ctx.fillStyle=g;ctx.save();ctx.translate(sx,sy+4);ctx.scale(1,.16);ctx.translate(-sx,-(sy+4));ctx.beginPath();ctx.arc(sx,sy+4,f.C.shadow*k*s*(f.state==='down'?1.7:1),0,7);ctx.fill();ctx.restore()}
+// ground shadow in three layers: a wide soft pool, the god's own outline laid on the floor away from the arena's light, and a tight dark contact patch under the feet
+function drawShadow(f,x){x=x??f.x;const gy=f.gy||0;if(gy<-1e5)return;const [sx,sy]=toScreen(x,gy);const h=Math.max(0,f.y-gy),s=Math.max(.3,1-h/900),k=VIEW.K*camZ();resetT();
+  const dn=f.state==='down',R=f.C.shadow*k*s*(dn?1.7:1);
+  const blob=(r,a,sq)=>{const g=ctx.createRadialGradient(sx,sy+4,0,sx,sy+4,r);g.addColorStop(0,`rgba(8,3,1,${a})`);g.addColorStop(.55,`rgba(8,3,1,${a*.55})`);g.addColorStop(1,'rgba(8,3,1,0)');
+    ctx.fillStyle=g;ctx.save();ctx.translate(sx,sy+4);ctx.scale(1,sq);ctx.translate(-sx,-(sy+4));ctx.beginPath();ctx.arc(sx,sy+4,r,0,7);ctx.fill();ctx.restore()};
+  blob(R*1.25,.34*s,.17);                                  // soft pool
+  if(x===f.x&&!STORY.on&&h<60)castShadow(f,sx,sy+4);      // shaped shadow
+  blob(R*(dn?.95:.55),.62*s*s,dn?.15:.13)}                   // contact patch, sharpens as the god lands
+/* the god's silhouette, drawn small into a side buffer, blackened, faded toward its far end and laid on the floor */
+const LIGHT={hall:[.12,.2,.5],grove:[.32,.22,.44],kingdom:[-.4,.24,.5],ruins:[.38,.21,.55],summit:[.62,.26,.5]};  // [lean, length, strength]
+const SHB=[];
+function castShadow(f,gx,gy){const L=LIGHT[STAGE.key]||[.25,.22,.28],lite=liteMode()||G.lowFx,q=lite?.3:.42;
+  const i=f.side|0,B=SHB[i]||(SHB[i]={c:document.createElement('canvas'),n:0});const bw=Math.max(2,Math.round(cv.width*q)),bh=Math.max(2,Math.round(cv.height*q));
+  if(B.c.width!==bw||B.c.height!==bh){B.c.width=bw;B.c.height=bh;B.x=null}
+  const X=B.x||(B.x=B.c.getContext('2d'));B.n++;
+  // phones refresh the outline every other frame
+  if(!lite||B.n%2||!B.ok){
+    const keep=ctx,kd=DPR;X.setTransform(1,0,0,1,0,0);X.globalCompositeOperation='source-over';X.globalAlpha=1;X.clearRect(0,0,bw,bh);
+    ctx=X;DPR=kd*q;let ok=false;
+    try{const sk=f.skin,fl=f.flash;f.skin=null;f.flash=0;
+      const rp=RX[f.key]&&rxPick(f);
+      if(rp)ok=drawRx(f,rp[0],rp[1],1,null);
+      else if(f.clip&&f.clip.sprite&&SPR[f.key]){const fr=f.clip.sprite,sf=f.clip.spFps||SPR[f.key].m.fps;ok=drawVid(f,fr[Math.min(fr.length-1,Math.floor(f.ct*sf))],1,null)}
+      if(!ok){drawRig(f,f.pose,f.x,f.y,f.facing,'normal',1,null);ok=true}
+      f.skin=sk;f.flash=fl}catch(e){ok=false}
+    ctx=keep;DPR=kd;
+    if(ok){X.setTransform(1,0,0,1,0,0);X.globalAlpha=1;X.globalCompositeOperation='source-in';X.fillStyle='#000';X.fillRect(0,0,bw,bh);
+      // fade: dark at the feet, gone by the head
+      const g0=gy*DPR*q,top=g0-f.C.shadow*4.6*VIEW.K*camZ()*DPR*q,gr=X.createLinearGradient(0,g0,0,top);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(.5,'rgba(0,0,0,.3)');gr.addColorStop(1,'rgba(0,0,0,.78)');
+      X.globalCompositeOperation='destination-out';X.fillStyle=gr;X.fillRect(0,0,bw,bh);X.globalCompositeOperation='source-over'}
+    B.ok=ok}
+  if(!B.ok)return;
+  const G0=gy*DPR,sh=L[0],kq=L[1];ctx.save();ctx.globalAlpha=L[2]*(f.vanish?0:1);ctx.imageSmoothingEnabled=true;
+  ctx.setTransform(1/q,0,sh/q,kq/q,-G0*sh,G0-G0*kq);ctx.drawImage(B.c,0,0);ctx.restore();resetT()}
 const screenToWorld=(sx,sy)=>{const k=VIEW.K*CAM.z;return[(sx-W/2-CAM.sx)/k+CAM.x,(VIEW.groundY+CAM.y*k+CAM.sy-sy)/k]};
 /* each god's weapon leaves its own kind of trail */
 function trailEmit(f,p){if(G.lowFx&&Math.random()<.5)return;const st=TRAIL_STYLE[f.key],[wx,wy]=screenToWorld(p[0][0],p[0][1]);
@@ -3378,8 +3417,17 @@ const humanCtrl=idx=>({human:true,idx,read:()=>readPlayer(idx)});
 
 /* ── matches ── */
 const MATCH={cfg:null,ladder:[],ladderIdx:0};
-function startArcade(p1){const rivals=ROSTER.filter(k=>k!==p1).sort(()=>Math.random()-.5);
-  const st=['hall','grove','hall','grove','hall'];MATCH.ladder=rivals.map((k,i)=>({mode:'arcade',p1,p2:k,stage:st[i],diff:SET.diff,p2human:false}));
+// fair shuffle: every order equally likely
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function startArcade(p1){
+  // a fresh order of rivals every run, and never the same first rival as last time
+  let rivals=shuffle(ROSTER.filter(k=>k!==p1));const last=store.get('arcFirst',null);
+  if(rivals.length>1&&rivals[0]===last){const j=1+Math.floor(Math.random()*(rivals.length-1));[rivals[0],rivals[j]]=[rivals[j],rivals[0]]}
+  store.set('arcFirst',rivals[0]);
+  // arenas: every arena before any repeats, never the same one twice in a row; the shadow fight keeps Broken Kingdom
+  const pool=STAGE_KEYS.filter(k=>k!=='kingdom'),st=[];let bag=[];
+  for(let i=0;i<rivals.length;i++){if(!bag.length){bag=shuffle(pool);if(st.length&&bag[0]===st[st.length-1])bag.push(bag.shift())}st.push(bag.shift())}
+  MATCH.ladder=rivals.map((k,i)=>({mode:'arcade',p1,p2:k,stage:st[i],diff:SET.diff,p2human:false}));
   MATCH.ladder.push({mode:'arcade',p1,p2:p1,stage:'kingdom',diff:SET.diff,p2human:false,shadow:true});
   MATCH.ladderIdx=0;launchVS(MATCH.ladder[0])}
 function arcadeNext(){MATCH.ladderIdx++;if(MATCH.ladderIdx>=MATCH.ladder.length){showEnding();return}launchVS(MATCH.ladder[MATCH.ladderIdx])}
