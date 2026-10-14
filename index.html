@@ -2476,7 +2476,10 @@ function menuFigNext(){const key=ROSTER[UI.menuIdx%ROSTER.length];UI.menuIdx++;c
 
 /* ── character select ── */
 const SEL={mode:'arcade',step:'p1',p1:null,p2:null,cur:'ogun',figs:[null,null]};
-function openSelect(mode){SEL.mode=mode;SEL.step='p1';SEL.p1=null;SEL.p2=null;SEL.cur=store.get('last',SEL.cur);if(!ROSTER.includes(SEL.cur))SEL.cur='ogun';SEL.figs=[null,null];
+function openSelect(mode){SEL.mode=mode;SEL.step='p1';SEL.p1=null;SEL.p2=null;SEL.figs=[null,null];
+  // the gods stand in a new order every visit; Ọ̀ṣun (coming soon) stays at the end and the cursor starts on the first god
+  const t=$('#tiles'),tl=shuffle([...t.querySelectorAll('.tile:not(.locked)')]);tl.forEach(b=>t.appendChild(b));const lk=t.querySelector('.tile.locked');if(lk)t.appendChild(lk);
+  SEL.cur=tl.length?tl[0].dataset.k:'ogun';
   $('#selMode').textContent={arcade:'Arcade',versus:'Versus',training:'Training',story:'Story · Chapter I'}[mode];go('select');setStage(mode==='training'?'hall':store.get('lastStage','hall'));renderSelect()}
 function buildTiles(){const t=$('#tiles');t.innerHTML='';
   for(const k of ROSTER){const b=document.createElement('button');b.className='tile';b.dataset.k=k;b.innerHTML=`<b>${CHARS[k].name}</b>`;portraitInto(b,k,'tile');b.setAttribute('aria-label',CHARS[k].name+', '+CHARS[k].title);
@@ -2526,7 +2529,7 @@ function selBack(){SFX.play('ui_back');if(SEL.step==='p2'){SEL.step='p1';SEL.cur
 
 /* ── stage select ── */
 function buildStages(){const el=$('#stages');el.innerHTML='';
-  for(const k of STAGE_KEYS.concat(['random'])){const b=document.createElement('button');b.className='stg'+(k==='random'?' rnd':'');b.dataset.s=k;
+  for(const k of shuffle(STAGE_KEYS).concat(['random'])){/* arenas in a new order every visit, Random last */const b=document.createElement('button');b.className='stg'+(k==='random'?' rnd':'');b.dataset.s=k;
     if(k!=='random')b.style.backgroundImage=`url(${ASSETS.stages[k].src})`;
     b.innerHTML=k==='random'?'<span><b>Random</b><small>Let the gods decide</small></span>':`<span><b>${STAGES[k].name}</b><small>${STAGES[k].sub}</small></span>`;
     b.addEventListener('click',()=>{const s=k==='random'?pick(STAGE_KEYS):k;store.set('lastStage',s);SFX.play('ui_ok');
