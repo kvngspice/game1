@@ -3547,6 +3547,9 @@ function resize(){W=innerWidth;H=innerHeight;const q=SET.quality;if(q==='low')G.
   if(STAGE.def)stageFit();stageCache();const lg=$('#logoSm');if(lg&&LOGO.ready)drawLogo(lg,1)}
 addEventListener('resize',resize);
 
+/* Story is hidden while it is finished behind the scenes; add ?story=1 to the address to open it for testing */
+(()=>{let on=false;try{on=new URLSearchParams(location.search).get('story')==='1'}catch(e){}
+  const b=document.querySelector('.mi[data-go="story"]');if(b&&!on){b.disabled=true;b.innerHTML='Story <small>Coming soon</small>'}})();
 /* ── demo fights: the title screen left alone for 30 s plays a CPU vs CPU match until any input ── */
 const DEMO={t:performance.now(),busy:0};
 function demoInput(e){DEMO.t=performance.now();
