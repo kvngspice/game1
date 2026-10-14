@@ -1482,7 +1482,7 @@ function rxTick(f,dt){if(!f.rx)return;const R=RX[f.key];
 const SPR_HIT={sp1:{dmg:28,stun:.3,push:200,kind:'light',h:480},sp2:{dmg:34,stun:.34,push:260,kind:'light',h:470},sp3:{dmg:48,stun:.44,push:360,kind:'mid',h:520},sp4:{dmg:44,stun:.42,push:340,kind:'mid',h:430},sp5:{dmg:68,stun:.62,push:620,kind:'kd',h:400,crack:1},
   lg1:{dmg:30,stun:.32,push:220,kind:'light',h:380},lg2:{dmg:40,stun:.4,push:320,kind:'mid',h:460},lg3:{dmg:26,stun:.34,push:160,kind:'low',h:120,low:1},lg4:{dmg:40,stun:.4,push:320,kind:'mid',h:520},lg5:{dmg:72,stun:.7,push:620,kind:'kd',h:260,crack:1}};
 const SPR_EV={lg5:'spStomp','sango:sp5':'spStomp','sango:sp4':'spStomp','oya:sp5':'spGust'};
-function spLite(m,c){if(c.lfr&&c.fr.every(id=>!m.frames[id].a||!m.sheets[m.frames[id].a].tw||m.sheets[m.frames[id].a].half))return c;if(c.lfr)return {fr:c.lfr,imp:c.limp,fps:(c.fps||m.fps)/2};if(!c.fr.some(id=>m.frames[id].tw))return c;
+function spLite(m,c){if(c.lfr)return {fr:c.lfr,imp:c.limp,fps:(c.fps||m.fps)/2};if(!c.fr.some(id=>m.frames[id].tw))return c;
   const fr=[];for(const id of c.fr){if(m.frames[id].tw)continue;if(fr.length&&fr[fr.length-1]===id)continue;fr.push(id)}
   const hit=c.fr[c.imp];let imp=fr.indexOf(hit);if(imp<0){const k=c.fr.slice(c.imp).find(id=>!m.frames[id].tw);imp=Math.max(0,fr.indexOf(k))}
   return {fr,imp,fps:(c.fps||m.fps)/2}}
@@ -2062,14 +2062,16 @@ function drawFighter(f){
       // chaining string to string: start the new strike from the wind-up frame closest to the pose she is already in
       if(f.spPrev&&f.clip.spImp>3){const M=SPR[f.key].m.frames,j=bestStart(M,f.spPrev.id,fr,Math.min(f.clip.spImp-3,Math.floor(f.clip.spImp*.6)),Math.floor(sp));if(j>sp){f.ct+=(j-sp)/sf;sp=j;si=j;id=fr[j]}}}
     // the last painted pose dissolves under the new one instead of cutting
-    if(f.spPrev){const q=(G.t-f.spPrev.t)/.09;if(q<1&&q>=0)drawVid(f,f.spPrev.id,1-q,null);else f.spPrev=null}
+    const LT=SPR[f.key].lite;
+    if(f.spPrev){const q=(G.t-f.spPrev.t)/(LT?.07:.09);if(q<1&&q>=0&&!(LT&&G.stop>0))drawVid(f,f.spPrev.id,1-q,null);else if(!(q<1&&q>=0))f.spPrev=null}
     if(window.__tr)__tr.push([G.t,f.side|0,f.state,f.clipName,sp,f.x,G.stop>0,sf]);
     // streaks only on the way into the hit, the recovery stays clean
     if(SPR[f.key].img[id]&&f.clip.hit&&f.clip.hit.length&&f.ct<=f.clip.hit[0][1]+.08)drawSwing(f,fr,si,sf);
     if(drawVid(f,id,1,jit)){const nid=fr[si+1],uf=sp-si,M=SPR[f.key].m.frames;if(sf<=30&&uf>.15&&nid!=null&&nid!==id&&frNear(M[id],M[nid]))drawVid(f,nid,(uf-.15)/.85*.8,jit);
       // a jump inside the clip (frames cut out of the video) cross-dissolves over a few ticks instead of popping
       if(f.spShown!=null&&f.spShown!==id&&Math.abs(id-f.spShown)>3&&Math.abs(id-f.spShown)<400&&!(f.spCut&&f.spCut.to===id))f.spCut={id:f.spShown,to:id,t:G.t};
-      f.spShown=id;if(f.spCut){const q=(G.t-f.spCut.t)/.08;if(q<1&&q>=0)drawVid(f,f.spCut.id,.75*(1-q),null);else f.spCut=null}
+      // phones: at most one extra draw a frame, and none while the hit freezes
+      f.spShown=id;if(f.spCut){const q=(G.t-f.spCut.t)/.08;if(q<1&&q>=0){if(!(LT&&(f.spPrev||G.stop>0)))drawVid(f,f.spCut.id,.75*(1-q),null)}else f.spCut=null}
       f.spLast={id,t:G.t};const u=f.ct/.1;if(f.spFromRig&&u<1)drawRig(f,f.pose,f.x,f.y,f.facing,'normal',1-u,jit);drawAura(f,true);return}}
   f.spClip=null;
   motionBlur(f);
@@ -3576,10 +3578,8 @@ function runJobs(list,prog){let done=0;const n=list.length||1;
 function godJobs(k){const L=[],lite=liteMode();
   const m=ASSETS.spr&&ASSETS.spr[k];
   if(m){const S=SPR[k]={m,img:{},half:{},glow:{},wsc:m.fightH/m.H,lite};
-    for(const nm in m.sheets||{}){const sh=m.sheets[nm];if(sh.tw&&lite&&!sh.half)continue;
-      // phones take the half-size copy of an in-between sheet: every frame stays, at a quarter of the memory
-      const hv=sh.tw&&lite&&sh.half;
-      L.push([m.base+nm+(hv?'h':'')+'.webp',img=>{const mp=hv?[]:mipOne(img,.5);for(const id in m.frames)if(m.frames[id].a===nm){S.img[id]=img;S.half[id]=mp}}]);
+    for(const nm in m.sheets||{}){const sh=m.sheets[nm];if(sh.tw&&lite)continue;  // phones: main sheets only, every other frame
+      L.push([m.base+nm+'.webp',img=>{const mp=mipOne(img,.5);for(const id in m.frames)if(m.frames[id].a===nm){S.img[id]=img;S.half[id]=mp}}]);
       if(m.sheets[nm].glow)L.push([m.base+'g'+nm+'.webp',img=>{for(const id in m.frames)if(m.frames[id].a===nm)S.glow[id]=img}])}
     for(const id in m.frames){if(m.frames[id].a)continue;const n=String(id).padStart(3,'0');L.push([m.base+n+'.webp',img=>S.img[id]=img]);if(m.glow!==false)L.push([m.base+'g'+n+'.webp',img=>S.glow[id]=img])}}
   const r=ASSETS.rx&&ASSETS.rx[k];
