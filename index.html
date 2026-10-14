@@ -277,6 +277,8 @@ body.story #touch .tb.dsh{display:grid}
 #loading em{font-style:normal;font-family:var(--body);font-size:.8rem;letter-spacing:.18em;color:var(--ash);min-height:1em}
 #loading p{max-width:420px;margin:6px 0 0;font-family:var(--body);font-size:.95rem;line-height:1.45;color:rgba(243,231,209,.78);min-height:2.9em;transition:opacity .45s}
 #loading p.out{opacity:0}
+#demoTag{position:absolute;left:50%;bottom:max(16px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;pointer-events:none;padding:8px 22px 9px calc(22px + .4em);border-radius:999px;background:var(--lacq2);border:1px solid rgba(233,181,75,.35);font-family:var(--display);font-weight:900;letter-spacing:.4em;font-size:1.05rem;color:var(--gold);text-shadow:0 2px 8px #000;text-align:center;animation:breathe 2.2s ease-in-out infinite}
+#demoTag small{display:block;margin-top:4px;font-family:var(--body);font-weight:600;letter-spacing:.2em;font-size:.7rem;color:var(--bone)}
 /* key art behind the loader: the three gods, text sits on a dark fade at the bottom */
 #loading.art{justify-content:flex-end;gap:10px;padding-bottom:max(5vh,18px);background:linear-gradient(0deg,rgba(10,6,4,.96) 0%,rgba(10,6,4,.78) 24%,rgba(10,6,4,.2) 48%,rgba(10,6,4,0) 62%),url(a/st/loadart.jpg) center 28%/cover no-repeat,var(--night)}
 #loading.art .ld-ring{display:none}
@@ -391,8 +393,9 @@ body.story .rnd{display:block;font-size:.7rem;color:var(--gold2)}
     </div>
     <div class="tiles" id="tiles"></div>
     <div class="sel-foot">
-      <div class="seg" id="p2seg" role="group" aria-label="Player 2"><span class="lab">Player 2</span><button data-p2="cpu">CPU</button><button data-p2="human">Human</button></div>
-      <div class="seg" id="diffSeg" role="group" aria-label="Difficulty"><span class="lab">CPU</span><button data-d="0">Easy</button><button data-d="1">Medium</button><button data-d="2">Arena Champion</button></div>
+      <div class="seg" id="p2seg" role="group" aria-label="Player 2"><span class="lab">Player 2</span><button data-p2="cpu">CPU</button><button data-p2="human">Human</button><button data-p2="watch">Watch</button></div>
+      <div class="seg" id="diff1Seg" role="group" aria-label="First CPU difficulty" hidden><span class="lab">CPU 1</span><button data-d1="0">Easy</button><button data-d1="1">Medium</button><button data-d1="2">Arena Champion</button></div>
+      <div class="seg" id="diffSeg" role="group" aria-label="Difficulty"><span class="lab" id="diffLab">CPU</span><button data-d="0">Easy</button><button data-d="1">Medium</button><button data-d="2">Arena Champion</button></div>
       <button class="cta" id="selGo">Confirm</button>
     </div>
   </section>
@@ -421,9 +424,11 @@ body.story .rnd{display:block;font-size:.7rem;color:var(--gold2)}
     <button class="fatbtn" id="fatBtn" hidden aria-label="Fatality"><b>FINISH</b><small>Tap now</small></button>
     <button class="pbtn" id="pauseBtn" aria-label="Pause"><svg viewBox="0 0 14 14"><rect x="2" y="1" width="3.5" height="12" fill="#f3e7d1"/><rect x="8.5" y="1" width="3.5" height="12" fill="#f3e7d1"/></svg></button>
     <div class="dock" id="dock" hidden>
-      <div class="seg" role="group" aria-label="Dummy"><span class="lab">Dummy</span><button data-dm="stand" aria-pressed="true">Stand</button><button data-dm="guard" aria-pressed="false">Guard</button><button data-dm="fight" aria-pressed="false">Fight</button></div>
+      <div class="seg" id="dummySeg" role="group" aria-label="Dummy"><span class="lab">Dummy</span><button data-dm="stand" aria-pressed="true">Stand</button><button data-dm="guard" aria-pressed="false">Guard</button><button data-dm="fight" aria-pressed="false">Fight</button></div>
       <div class="seg" role="group" aria-label="Speed"><span class="lab">Speed</span><button data-sp="1" aria-pressed="true">1×</button><button data-sp=".5" aria-pressed="false">½×</button><button data-sp=".2" aria-pressed="false">⅕×</button></div>
+      <div class="seg" id="watchSeg" role="group" aria-label="Watch" hidden><button id="skipBtn">Next round</button></div>
     </div>
+    <div id="demoTag" hidden>Demo<small id="demoTxt">Press any key</small></div>
     <div id="touch" hidden>
       <div id="joyZone"><div class="joy idle" id="joy"><i></i></div></div>
       <button class="tb blk" data-k="guard" aria-label="Guard"><svg viewBox="0 0 24 24"><path d="M12 2.5 4.5 5.3v5.9c0 4.8 3.2 8.9 7.5 10.4 4.3-1.5 7.5-5.6 7.5-10.4V5.3L12 2.5z" fill="rgba(233,181,75,.12)" stroke="#f3dca4" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 6v12M8 9.5h8" stroke="#f3dca4" stroke-width="1.3" stroke-linecap="round" opacity=".55"/></svg><b class="lb">GUARD</b></button>
@@ -509,7 +514,7 @@ const RAD=Math.PI/180;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const coarse=matchMedia('(pointer:coarse)').matches||('ontouchstart' in window&&navigator.maxTouchPoints>0);
 const store={get(k,d){try{const v=localStorage.getItem('deity.'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('deity.'+k,JSON.stringify(v))}catch(e){}}};
-const SET=Object.assign({music:.7,sfx:.85,quality:'auto',motion:'auto',scene:'auto',touch:'auto',shake:!reduced,diff:1,p2:'cpu'},store.get('settings',{}));
+const SET=Object.assign({music:.7,sfx:.85,quality:'auto',motion:'auto',scene:'auto',touch:'auto',shake:!reduced,diff:1,diff1:1,p2:'cpu'},store.get('settings',{}));
 const saveSet=()=>store.set('settings',SET);
 // phones skip the painted in-between frames (memory) and blend neighbouring frames instead
 const frOff=fps=>Math.min(.5,.5*fps*((typeof G!=='undefined'&&G.sdt)||1/60));
@@ -2413,8 +2418,10 @@ function portraitInto(el,key,kind){const u=portraitURL(key,kind);if(u){if(el.tag
 function topScreen(){return UI.over.length?UI.over[UI.over.length-1]:UI.base}
 function paint(){for(const s of $$('.scr')){const id=s.id.slice(2);s.classList.toggle('on',id===UI.base||UI.over.includes(id))}
   document.body.classList.toggle('touch',useTouch());
-  $('#touch').hidden=!(UI.base==='fight'&&useTouch());
-  $('#dock').hidden=!(UI.base==='fight'&&FIGHT.training);
+  const demo=UI.base==='fight'&&MATCH.cfg&&MATCH.cfg.attract;
+  $('#touch').hidden=!(UI.base==='fight'&&useTouch()&&!FIGHT.watch);
+  $('#dock').hidden=!(UI.base==='fight'&&(FIGHT.training||FIGHT.watch&&!demo));$('#dummySeg').hidden=!FIGHT.training;$('#watchSeg').hidden=!FIGHT.watch;
+  $('#demoTag').hidden=!demo;$('#demoTxt').textContent=useTouch()?'Tap to play':'Press any key';
   $('#pauseBtn').hidden=UI.base!=='fight'||UI.over.includes('result');
   if(UI.over.includes('result')){$('#touch').hidden=true;$('#dock').hidden=true}
   setTimeout(()=>{if(!UI.sel||!visible(UI.sel))focusFirst()},30)}
@@ -2480,8 +2487,9 @@ function infoHTML(key,who){if(!key)return`<p class="kick">${who}</p><h3 style="o
   if(key==='osun')return`<p class="kick">${who}</p><h3>Ọ̀ṣun</h3><p class="ttl">The Golden Current</p><p class="sty">Arriving in a later update.</p><p class="sig"><b>Golden Current.</b> River and honey, healing and wrath.</p>`;
   const C=CHARS[key];const pips=v=>`<div class="pips">${[1,2,3,4,5].map(i=>`<i class="${i<=v?'on':''}"></i>`).join('')}</div>`;
   return`<p class="kick">${who}</p><h3>${C.name}</h3><p class="ttl">${C.title}</p><p class="sty">${C.style}</p><div class="stats">${Object.entries(C.stats).map(([k,v])=>`<span>${k}</span>${pips(v)}`).join('')}</div><p class="sig"><b>${C.sig[0]}.</b> ${C.sig[1]}</p><p class="quote">“${C.quote}”</p>`}
-function whoLabel(side){if(side===0)return SEL.mode==='versus'&&SET.p2==='human'&&!useTouch()?'Player 1':'You';
-  if(SEL.mode==='training')return'Sparring spirit';if(SEL.mode==='arcade')return'Rivals';return SET.p2==='human'&&!useTouch()?'Player 2':'CPU · '+DIFF[SET.diff].name}
+const watching=()=>SEL.mode==='versus'&&SET.p2==='watch';
+function whoLabel(side){if(side===0)return watching()?'CPU 1 · '+DIFF[SET.diff1].name:SEL.mode==='versus'&&SET.p2==='human'&&!useTouch()?'Player 1':'You';
+  if(SEL.mode==='training')return'Sparring spirit';if(SEL.mode==='arcade')return'Rivals';return SET.p2==='human'&&!useTouch()?'Player 2':(watching()?'CPU 2 · ':'CPU · ')+DIFF[SET.diff].name}
 function renderSelect(){
   const s=SEL.step,hov=SEL.cur;
   const k1=s==='p1'?hov:SEL.p1,k2=s==='p2'?hov:SEL.p2;
@@ -2491,7 +2499,9 @@ function renderSelect(){
   for(const t of $$('#tiles .tile')){t.querySelectorAll('.tag').forEach(x=>x.remove());
     if(t.dataset.k===k1){const g=document.createElement('span');g.className='tag t1';g.textContent='P1';t.appendChild(g)}
     if(SEL.mode!=='arcade'&&t.dataset.k===k2){const g=document.createElement('span');g.className='tag t2';g.textContent=SEL.mode==='training'?'SP':(SET.p2==='human'&&!useTouch()?'P2':'CPU');t.appendChild(g)}}
-  $('#p2seg').hidden=SEL.mode!=='versus'||useTouch();
+  $('#p2seg').hidden=SEL.mode!=='versus';$('#p2seg [data-p2="human"]').hidden=useTouch();
+  $('#diff1Seg').hidden=!watching();$('#diffLab').textContent=watching()?'CPU 2':'CPU';
+  $$('#diff1Seg button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.d1===SET.diff1));
   $('#diffSeg').hidden=SEL.mode==='training'||SEL.mode==='story'||(SEL.mode==='versus'&&SET.p2==='human'&&!useTouch());
   $$('#p2seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.p2===SET.p2));
   $$('#diffSeg button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.d===SET.diff));
@@ -2520,7 +2530,7 @@ function buildStages(){const el=$('#stages');el.innerHTML='';
     if(k!=='random')b.style.backgroundImage=`url(${ASSETS.stages[k].src})`;
     b.innerHTML=k==='random'?'<span><b>Random</b><small>Let the gods decide</small></span>':`<span><b>${STAGES[k].name}</b><small>${STAGES[k].sub}</small></span>`;
     b.addEventListener('click',()=>{const s=k==='random'?pick(STAGE_KEYS):k;store.set('lastStage',s);SFX.play('ui_ok');
-      launchVS({mode:'versus',p1:SEL.p1,p2:SEL.p2,stage:s,diff:SET.diff,p2human:SET.p2==='human'&&!useTouch()})});
+      launchVS({mode:'versus',p1:SEL.p1,p2:SEL.p2,stage:s,diff:SET.diff,diff1:SET.diff1,watch:SET.p2==='watch',p2human:SET.p2==='human'&&!useTouch()})});
     b.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')setSel(b)});
     b.addEventListener('focus',()=>{if(k!=='random'&&STAGE.key!==k)setStage(k)});
     el.appendChild(b)}
@@ -2591,7 +2601,7 @@ function htShow(i){$$('#htTabs button').forEach(b=>b.setAttribute('aria-pressed'
 /* ── results and ending ── */
 function showResult(win){const cfg=MATCH.cfg,[A,B]=FIGHT.f,w=win===0?A:B;
   const p1won=win===0,human2=cfg.p2human;
-  $('#resKick').textContent=human2?`Player ${win+1} wins`:p1won?'Victory':'Defeat';
+  $('#resKick').textContent=cfg.watch?'Winner':human2?`Player ${win+1} wins`:p1won?'Victory':'Defeat';
   $('#resName').textContent=w.C.name;$('#resTitle').textContent=w.C.title;$('#resQuote').textContent=`“${w.C.quote}”`;
   const st=A.stats;$('#resStats').innerHTML=`<div><dt>Damage</dt><dd>${st.dmg}</dd></div><div><dt>Best combo</dt><dd>${st.best}</dd></div><div><dt>Hits</dt><dd>${st.hits}</dd></div><div><dt>Rounds</dt><dd>${A.wins}–${B.wins}</dd></div>`;
   const m=$('#resMenu');m.innerHTML='';const add=(t,fn)=>{const b=document.createElement('button');b.className='mi';b.textContent=t;b.addEventListener('click',()=>{SFX.play('ui_ok');fn()});m.appendChild(b)};
@@ -3436,7 +3446,9 @@ function startMatch(cfg){
   MATCH.cfg=cfg;MATCH.token=(MATCH.token||0)+1;FIGHT.mode=cfg.mode;FIGHT.training=cfg.mode==='training';FIGHT.dummy='stand';FIGHT.speed=1;
   setStage(cfg.stage);fxClear();
   const A=new Fighter(0,cfg.p1),B=new Fighter(1,cfg.p2,FIGHT.training?'spirit':cfg.p1===cfg.p2?'alt':null);
-  A.ctrl=humanCtrl(0);B.ctrl=FIGHT.training?makeDummy():cfg.p2human?humanCtrl(1):makeAI(cfg.diff);
+  FIGHT.watch=!!cfg.watch&&!FIGHT.training;
+  A.ctrl=FIGHT.watch?makeAI(cfg.diff1??1):humanCtrl(0);B.ctrl=FIGHT.training?makeDummy():cfg.p2human?humanCtrl(1):makeAI(cfg.diff);
+  if(FIGHT.watch)A.dmgMul=DIFF[cfg.diff1??1].dmg;
   if(!B.ctrl.human&&!FIGHT.training)B.dmgMul=DIFF[cfg.diff].dmg;
   FIGHT.f=[A,B];FIGHT.round=1;go('fight');buildHud();startRound();MUSIC.start('fight',cfg.stage);
   $$('#dock [data-dm]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.dm===FIGHT.dummy));$$('#dock [data-sp]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.sp===FIGHT.speed))}
@@ -3455,7 +3467,8 @@ function endRound(){const w=FIGHT.winner;if(w!=null)FIGHT.f[w].wins++;
   if(w!=null&&FIGHT.f[w].wins>=2){matchOver(w);return}
   FIGHT.round++;if(FIGHT.round>7){const [A,B]=FIGHT.f;matchOver(A.hp>=B.hp?0:1);return}
   fadeTo(startRound,200)}
-function matchOver(w){FIGHT.phase='over';const cfg=MATCH.cfg;MUSIC.start(w===0||cfg.p2human?'victory':'menu',cfg.stage);
+function matchOver(w){FIGHT.phase='over';const cfg=MATCH.cfg;
+  if(cfg.attract){const tk=MATCH.token;setTimeout(()=>{if(UI.base==='fight'&&MATCH.token===tk)exitDemo(true)},2600);return}MUSIC.start(w===0||cfg.p2human?'victory':'menu',cfg.stage);
   const tk=MATCH.token;setTimeout(()=>{if(UI.base==='fight'&&MATCH.token===tk&&FIGHT.phase==='over')showResult(w)},900)}
 function phaseTick(dt){const P=FIGHT,[A,B]=P.f;P.phaseT+=dt;const fl=P.flags;
   if(P.phase==='intro'){
@@ -3531,6 +3544,19 @@ function resize(){W=innerWidth;H=innerHeight;const q=SET.quality;if(q==='low')G.
   if(STAGE.def)stageFit();stageCache();const lg=$('#logoSm');if(lg&&LOGO.ready)drawLogo(lg,1)}
 addEventListener('resize',resize);
 
+/* ── demo fights: the title screen left alone for 30 s plays a CPU vs CPU match until any input ── */
+const DEMO={t:performance.now(),busy:0};
+function demoInput(e){DEMO.t=performance.now();
+  if(UI.base==='fight'&&MATCH.cfg&&MATCH.cfg.attract){e.preventDefault();e.stopImmediatePropagation();KD.clear();exitDemo(false)}}
+addEventListener('keydown',demoInput,true);addEventListener('pointerdown',demoInput,true);
+function exitDemo(again){if(DEMO.busy)return;DEMO.busy=1;MATCH.cfg.attract=false;MATCH.token++;
+  fadeTo(()=>{FIGHT.f=[];FIGHT.watch=false;go('title');DEMO.busy=0;DEMO.t=performance.now()-(again?22000:0)})}
+function demoTick(){if(UI.base!=='title'||UI.over.length||DEMO.busy||document.hidden||performance.now()-DEMO.t<30000)return;DEMO.busy=1;
+  const gods=shuffle(ROSTER.filter(k=>CHARS[k])).slice(0,2),stage=pick(STAGE_KEYS),d=Math.random()<.5?1:2;
+  ensureGods(gods).then(()=>{DEMO.busy=0;if(UI.base!=='title'||UI.over.length||performance.now()-DEMO.t<30000)return;
+    fadeTo(()=>startMatch({mode:'versus',p1:gods[0],p2:gods[1],stage,diff:d,diff1:d,watch:true,attract:true,p2human:false}))}).catch(()=>{DEMO.busy=0})}
+setInterval(demoTick,1000);
+
 /* ── keyboard and gamepad for menus ── */
 addEventListener('keydown',e=>{audioInit(true);
   if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)||e.code==='Tab'&&UI.base!=='fight')e.preventDefault();
@@ -3551,6 +3577,7 @@ let MPREV={};
 function pollPadsMenu(){const pads=getPads();const h={};for(const p of pads){const b=i=>p.buttons[i]&&p.buttons[i].pressed,ax=p.axes||[];
     h.u||=b(12)||ax[1]<-.6;h.d||=b(13)||ax[1]>.6;h.l||=b(14)||ax[0]<-.6;h.r||=b(15)||ax[0]>.6;h.ok||=b(0);h.bk||=b(1);h.st||=b(9)}
   const e=k=>h[k]&&!MPREV[k];MPREV=h;if(!pads.length)return;
+  if(['u','d','l','r','ok','bk','st'].some(e)){DEMO.t=performance.now();if(UI.base==='fight'&&MATCH.cfg&&MATCH.cfg.attract){exitDemo(false);return}}
   const s=topScreen();
   if(s==='title'){if(e('ok')||e('st'))enterMenu();return}
   if(s==='fight'){if(e('st'))openPause();return}
@@ -3609,6 +3636,8 @@ function bind(){
   $('#htBack').addEventListener('click',()=>{closeOver();focusFirst()});
   $('#endGo').addEventListener('click',()=>{SFX.play('ui_ok');fadeTo(()=>go('menu'))});
   $$('#dock [data-dm]').forEach(b=>b.addEventListener('click',()=>{FIGHT.dummy=b.dataset.dm;$$('#dock [data-dm]').forEach(x=>x.setAttribute('aria-pressed',x===b));b.blur()}));
+  $('#skipBtn').addEventListener('click',e=>{e.currentTarget.blur();if(FIGHT.watch&&(FIGHT.phase==='fight'||FIGHT.phase==='intro')){FIGHT.timer=0;timeOut()}});
+  $$('#diff1Seg button').forEach(b=>b.addEventListener('click',()=>{SET.diff1=+b.dataset.d1;saveSet();SFX.play('ui_move');renderSelect()}));
   $$('#dock [data-sp]').forEach(b=>b.addEventListener('click',()=>{FIGHT.speed=+b.dataset.sp;$$('#dock [data-sp]').forEach(x=>x.setAttribute('aria-pressed',x===b));b.blur()}));
   addEventListener('pointerdown',()=>audioInit(),{capture:true});
   for(const ev of ['touchend','pointerup','click','keydown'])addEventListener(ev,()=>audioInit(true),{capture:true,passive:true});
