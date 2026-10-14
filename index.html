@@ -86,6 +86,7 @@ kbd{font-family:var(--body);font-weight:800;font-size:.76rem;background:var(--bo
 .info .quote{margin:0;font-style:italic;color:var(--bone);opacity:.85;font-size:.9rem;border-top:1px solid rgba(243,231,209,.12);padding-top:7px}
 .tiles{display:flex;gap:10px;justify-content:center;flex-wrap:nowrap;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:none}
 .tile{position:relative;flex:0 0 auto;width:clamp(86px,11vw,128px);aspect-ratio:3/4;border:2px solid rgba(243,231,209,.14);background:#1a120d center/cover no-repeat;overflow:hidden;transition:transform .2s var(--ease),border-color .2s;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.tile .pcv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}.tile>b{position:relative;z-index:1}
 .tile::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,6,4,.92) 0%,rgba(10,6,4,0) 55%)}
 .tile b{position:absolute;left:8px;right:8px;bottom:7px;z-index:1;font-family:var(--display);font-weight:900;font-size:clamp(.82rem,1.4vw,1rem);letter-spacing:.04em;text-align:left}
 .tile .tag{position:absolute;top:6px;z-index:1;font-family:var(--display);font-weight:900;font-size:.62rem;padding:2px 6px;letter-spacing:.1em}
@@ -1998,7 +1999,8 @@ function skinFrame(img,sx,sy,sw,sh,skin,need){if(!img.__sid)img.__sid=++skinCanv
   const sc=Math.min(1,Math.max(.25,need),640/Math.max(sw,sh)),w=Math.max(1,Math.round(sw*sc)),h=Math.max(1,Math.round(sh*sc));
   const key=img.__sid+':'+sx+':'+sy+':'+w+':'+skin;let c=SKINC.get(key);if(c){SKINC.delete(key);SKINC.set(key,c);return c}
   c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(img,sx,sy,sw,sh,0,0,w,h);
-  const d=g.getImageData(0,0,w,h),p=d.data,M=SKINM[skin].m,A=SKINM[skin].a;
+  let d;try{d=g.getImageData(0,0,w,h)}catch(e){g.clearRect(0,0,w,h);g.filter=skin==='spirit'?'grayscale(1) brightness(1.6) opacity(.75)':'hue-rotate(160deg) saturate(.8)';g.drawImage(img,sx,sy,sw,sh,0,0,w,h);g.filter='none';SKINC.set(key,c);return c}
+  const p=d.data,M=SKINM[skin].m,A=SKINM[skin].a;
   for(let i=0;i<p.length;i+=4){if(!p[i+3])continue;const r=p[i],gg=p[i+1],b=p[i+2];p[i]=M[0]*r+M[1]*gg+M[2]*b;p[i+1]=M[3]*r+M[4]*gg+M[5]*b;p[i+2]=M[6]*r+M[7]*gg+M[8]*b;p[i+3]*=A}
   g.putImageData(d,0,0);SKINC.set(key,c);if(SKINC.size>48)SKINC.delete(SKINC.keys().next().value);return c}
 function drawVid(f,id,a,jit){const S=SPR[f.key],fm=S.m.frames[id];const k=VIEW.K*camZ()*S.wsc,s=k*DPR;let img=S.img[id];if(!img)return false;
@@ -2141,7 +2143,7 @@ function audioInit(gesture){
     TRACK.load();if(MUSIC.want)MUSIC.start(MUSIC.want.mode,MUSIC.want.stage,true);
   }catch(e){AUD.ctx=null}
 }
-function setVolumes(){if(!AUD.ctx)return;const t=AUD.ctx.currentTime;AUD.music.gain.setTargetAtTime(SET.music*.55,t,.05);AUD.sfx.gain.setTargetAtTime(SET.sfx*.9,t,.05)}
+function setVolumes(){TRACK.vol();if(!AUD.ctx)return;const t=AUD.ctx.currentTime;AUD.music.gain.setTargetAtTime(SET.music*.55,t,.05);AUD.sfx.gain.setTargetAtTime(SET.sfx*.9,t,.05)}
 const mtof=m=>440*Math.pow(2,(m-69)/12);
 function vOsc(type,f1,t,dur,o={}){const AC=AUD.ctx;if(!AC)return;const os=AC.createOscillator(),g=AC.createGain();os.type=type;os.frequency.setValueAtTime(f1,t);
   if(o.f2)os.frequency.exponentialRampToValueAtTime(Math.max(20,o.f2),t+(o.glide||dur));if(o.detune)os.detune.value=o.detune;
@@ -2262,13 +2264,17 @@ const SFX={
    A 12-pulse bell line (the standard West African timeline) anchors everything; drums, bass, pads and a wordless choir enter as intensity rises. */
 const BELL=[0,2,4,5,7,9,11];
 const TRACK={buf:null,src:null,on:false,gain:null,loading:null,
+  el:null,
   load(){if(this.loading||!ASSETS.music||!AUD.ctx)return this.loading;
-    this.loading=fetch(ASSETS.music).then(r=>r.arrayBuffer()).then(b=>AUD.ctx.decodeAudioData(b)).then(b=>{this.buf=b;if(MUSIC.mode)this.play()}).catch(e=>{console.warn('Theme could not load; using the generated score.',e)});return this.loading},
-  play(){if(!AUD.ctx)return;if(!this.buf){this.load();return}if(this.src)return;
+    this.loading=fetch(ASSETS.music).then(r=>{if(!r.ok)throw new Error(r.status);return r.arrayBuffer()}).then(b=>AUD.ctx.decodeAudioData(b)).then(b=>{this.buf=b;if(MUSIC.mode)this.play()})
+      .catch(()=>{ // opened from disk: a plain audio element can still play the file
+        const a=new Audio(ASSETS.music);a.loop=true;a.preload='auto';this.el=a;this.vol();a.addEventListener('canplaythrough',()=>{if(MUSIC.mode)this.play()},{once:true});a.addEventListener('error',()=>{this.el=null})});return this.loading},
+  vol(){if(this.el)this.el.volume=Math.max(0,Math.min(1,SET.music*.55*.62*(this.muf?.35:1)))},
+  play(){if(!AUD.ctx)return;if(this.el&&!this.buf){this.vol();if(this.el.paused){this.el.play().then(()=>{this.on=true}).catch(()=>{})}return}if(!this.buf){this.load();return}if(this.src)return;
     const AC=AUD.ctx,t=AC.currentTime;if(!this.gain){this.gain=AC.createGain();this.gain.connect(AUD.music)}
     this.gain.gain.cancelScheduledValues(t);this.gain.gain.setValueAtTime(0,t);this.gain.gain.linearRampToValueAtTime(.62,t+1.2);
     const s=AC.createBufferSource();s.buffer=this.buf;s.loop=true;s.loopStart=0;s.loopEnd=this.buf.duration;s.connect(this.gain);s.start(t);this.src=s;this.on=true},
-  stop(){if(!this.src)return;const t=AUD.ctx.currentTime;this.gain.gain.setTargetAtTime(0,t,.3);const s=this.src;this.src=null;this.on=false;try{s.stop(t+1.5)}catch(e){}}};
+  stop(){if(this.el&&!this.el.paused){this.el.pause();this.on=false}if(!this.src)return;const t=AUD.ctx.currentTime;this.gain.gain.setTargetAtTime(0,t,.3);const s=this.src;this.src=null;this.on=false;try{s.stop(t+1.5)}catch(e){}}};
 const PROG={fight:[[0,3,7],[0,3,7],[8,12,15],[10,14,17]],menu:[[0,3,7],[8,12,15],[5,8,12],[10,14,17]],victory:[[0,4,7],[5,9,12],[7,11,14],[0,4,7]]};
 const TALK=[[2,3,8,10],[3,5,9,11],[2,5,8,11],[1,3,6,10,11]];
 const MUSIC={mode:null,root:50,int:0,nextT:0,p:0,bar:0,timer:null,want:null,talk:TALK[0],
@@ -2278,7 +2284,7 @@ const MUSIC={mode:null,root:50,int:0,nextT:0,p:0,bar:0,timer:null,want:null,talk
     TRACK.play();if(!this.timer)this.timer=setInterval(()=>this.pump(),30)},
   stop(){this.mode=null;this.want=null;TRACK.stop()},
   setInt(n){this.int=n},
-  muffle(on){if(!AUD.ctx)return;AUD.musicLP.frequency.setTargetAtTime(on?700:18000,now(),.08)},
+  muffle(on){TRACK.muf=on;TRACK.vol();if(!AUD.ctx)return;AUD.musicLP.frequency.setTargetAtTime(on?700:18000,now(),.08)},
   pump(){if(!AUD.ctx||!this.mode||TRACK.on)return;const pd=60/this.bpm/3;
     while(this.nextT<now()+.16){this.pulse(this.p%12,this.nextT,pd);this.nextT+=pd;this.p++;if(this.p%12===0){this.bar++;if(Math.random()<.5)this.talk=pick(TALK)}}},
   pulse(p,t,pd){const m=this.mode,I=this.int,R=this.root,D=AUD.music,bl=pd*12;
@@ -2331,8 +2337,14 @@ function playVoice(key){const v=ASSETS.voice&&ASSETS.voice[key];if(!v||!AUD.ctx)
 /* ───────── Screens, navigation and HUD ───────── */
 const UI={base:'loading',over:[],sel:null,menuFig:null,menuIdx:0,menuT:0,show:[],vsT:0};
 const PORT={},TILEIMG={};
-function portraitURL(key,kind){const id=key+kind;if(PORT[id])return PORT[id];
-  const c=kind==='tile'?portrait(key,240,320,1.25,.3):portrait(key,128,128,2.5,.66);PORT[id]=c.toDataURL('image/png');return PORT[id]}
+// portraits are painted once; when the page is opened from disk (file://) the browser will not export them, so the canvas itself is used
+function portraitCanvas(key,kind){const id=key+kind+'c';if(PORT[id])return PORT[id];return PORT[id]=kind==='tile'?portrait(key,240,320,1.25,.3):portrait(key,128,128,2.5,.66)}
+function portraitURL(key,kind){const id=key+kind;if(PORT[id]!==undefined)return PORT[id];
+  try{PORT[id]=portraitCanvas(key,kind).toDataURL('image/png')}catch(e){PORT[id]=''}return PORT[id]}
+function portraitInto(el,key,kind){const u=portraitURL(key,kind);if(u){if(el.tagName==='IMG')el.src=u;else el.style.backgroundImage=`url(${u})`;return el}
+  const c=portraitCanvas(key,kind),d=document.createElement('canvas');d.width=c.width;d.height=c.height;d.getContext('2d').drawImage(c,0,0);
+  if(el.tagName==='IMG'){d.className=el.className;d.style.cssText='width:100%;height:100%;object-fit:cover;display:block';el.replaceWith(d);return d}
+  d.className='pcv';el.prepend(d);return el}
 
 function topScreen(){return UI.over.length?UI.over[UI.over.length-1]:UI.base}
 function paint(){for(const s of $$('.scr')){const id=s.id.slice(2);s.classList.toggle('on',id===UI.base||UI.over.includes(id))}
@@ -2396,7 +2408,7 @@ const SEL={mode:'arcade',step:'p1',p1:null,p2:null,cur:'ogun',figs:[null,null]};
 function openSelect(mode){SEL.mode=mode;SEL.step='p1';SEL.p1=null;SEL.p2=null;SEL.cur=store.get('last',SEL.cur);if(!ROSTER.includes(SEL.cur))SEL.cur='ogun';SEL.figs=[null,null];
   $('#selMode').textContent={arcade:'Arcade',versus:'Versus',training:'Training',story:'Story · Chapter I'}[mode];go('select');setStage(mode==='training'?'hall':store.get('lastStage','hall'));renderSelect()}
 function buildTiles(){const t=$('#tiles');t.innerHTML='';
-  for(const k of ROSTER){const b=document.createElement('button');b.className='tile';b.dataset.k=k;b.style.backgroundImage=`url(${portraitURL(k,'tile')})`;b.innerHTML=`<b>${CHARS[k].name}</b>`;b.setAttribute('aria-label',CHARS[k].name+', '+CHARS[k].title);
+  for(const k of ROSTER){const b=document.createElement('button');b.className='tile';b.dataset.k=k;b.innerHTML=`<b>${CHARS[k].name}</b>`;portraitInto(b,k,'tile');b.setAttribute('aria-label',CHARS[k].name+', '+CHARS[k].title);
     b.addEventListener('click',()=>chooseTile(k));b.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')setSel(b)});t.appendChild(b)}
   const o=document.createElement('button');o.className='tile locked';o.dataset.k='osun';if(OSUN)o.style.backgroundImage=`url(${OSUN})`;o.innerHTML='<b>Ọ̀ṣun<small>Coming soon</small></b>';o.setAttribute('aria-label','Ọ̀ṣun, coming soon');
   o.addEventListener('click',()=>{SFX.play('ui_lock');o.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'none'}],{duration:180})});t.appendChild(o)}
@@ -2465,8 +2477,9 @@ function launchVS(cfg){keepGods([cfg.p1,cfg.p2]);ensureGods([cfg.p1,cfg.p2]);fad
  })}
 
 /* ── HUD ── */
-function buildHud(){const [A,B]=FIGHT.f;const side=(f,r)=>`<div class="side ${r?'r':''}"><div class="por"><img alt="" src="${portraitURL(f.key,'head')}"></div><div class="bars"><div class="nm"><b>${f.skin==='spirit'?f.C.spirit:f.C.name}</b><div class="wins"${FIGHT.training?' hidden':''}><i></i><i></i></div></div><div class="hp"><i class="tr"></i><i class="fl"></i></div><div class="ori m"><span>ÀṢẸ</span><div class="seg2"><i><b></b></i></div></div><div class="ori h"><span>ORÍ</span><div class="seg2"><i><b></b></i></div></div></div></div>`;
+function buildHud(){const [A,B]=FIGHT.f;const side=(f,r)=>`<div class="side ${r?'r':''}"><div class="por"><img alt="" data-pk="${f.key}"></div><div class="bars"><div class="nm"><b>${f.skin==='spirit'?f.C.spirit:f.C.name}</b><div class="wins"${FIGHT.training?' hidden':''}><i></i><i></i></div></div><div class="hp"><i class="tr"></i><i class="fl"></i></div><div class="ori m"><span>ÀṢẸ</span><div class="seg2"><i><b></b></i></div></div><div class="ori h"><span>ORÍ</span><div class="seg2"><i><b></b></i></div></div></div></div>`;
   $('#hud').innerHTML=side(A,0)+`<div class="mid"><div class="timer" id="timer">${FIGHT.training?'∞':60}</div><span class="rnd" id="rndLbl"></span></div>`+side(B,1);
+  for(const im of $$('#hud img[data-pk]'))portraitInto(im,im.dataset.pk,'head');
   const sides=$$('#hud .side');FIGHT.f.forEach((f,i)=>{const s=sides[i];f.hud={hp:s.querySelector('.hp'),fl:s.querySelector('.fl'),tr:s.querySelector('.tr'),ori:s.querySelector('.ori.h'),orm:s.querySelector('.ori.m'),segs:[s.querySelector('.ori.m i'),s.querySelector('.ori.h i')],wins:[...s.querySelectorAll('.wins i')]};
     s.querySelectorAll('.seg2 b').forEach(b=>b.style.setProperty('--ofill',f.C.oriFill));s.style.setProperty('--ofill',f.C.oriFill)});
   for(const c of ['#combo0','#combo1'])$(c).innerHTML='<div class="n"></div><div class="l">HITS</div><div class="d"></div>';
@@ -3019,7 +3032,7 @@ const NAMES={aja:'Àjà',hunter:'The hunter'};
 function storySay(lines){STORY.talk={lines,i:0,ch:0,t:0};const el=$('#stTalk');el.hidden=false;document.body.classList.add('talking');$('#stTalk .nx').textContent=useTouch()?'Tap to continue':'Press J or Enter';showLine()}
 function showLine(){const T=STORY.talk,L=T.lines[T.i],P=FIGHT.f[0];const who=L[0]==='god'?P.key:L[0];
   $('#stTalk .nm').textContent=L[0]==='god'?P.C.name:NAMES[L[0]]||'';$('#stTalk .nm').style.color=L[0]==='god'?P.C.glowCol:L[0]==='aja'?'#b8ff8a':'#e9d6b0';
-  const pt=$('#stTalk .pt');const src=L[0]==='god'?portraitURL(P.key,'head'):L[0]==='aja'?ajaFace():null;pt.hidden=!src;if(src)pt.src=src;
+  const pt=$('#stTalk .pt');let src=L[0]==='god'?portraitURL(P.key,'head'):L[0]==='aja'?ajaFace():null;if(!src&&L[0]==='god')src=(()=>{try{return portraitCanvas(P.key,'head').toDataURL()}catch(e){return null}})();pt.hidden=!src;if(src)pt.src=src;
   T.ch=0;T.t=0;T.full=L[1];$('#stTalk .tx').textContent=''}
 function storyAdvance(){const T=STORY.talk;if(!T)return;if(T.ch<T.full.length){T.ch=T.full.length;$('#stTalk .tx').textContent=T.full;return}
   T.i++;SFX.play('ui_move');if(T.i>=T.lines.length){STORY.talk=null;$('#stTalk').hidden=true;document.body.classList.remove('talking');return}showLine()}
